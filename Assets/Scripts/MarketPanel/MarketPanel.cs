@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public enum MarketPanelContext { Idle, RowSelectedAndMarketActive }
+public enum MarketPanelContext { Idle, RowSelected, RowSelectedAndMarketActive }
 public enum KeyBindingAction { Help, Buy, Sell}
 
 public class KeyBinding {
@@ -86,7 +86,7 @@ public class MarketPanel : MonoBehaviour {
                 DisplayHelpMessages();
                 break;
             case KeyBindingAction.Buy:
-                if (Market.ActiveStock == null || !Market.MarketDayStarted) return;
+                if (Market.ActiveStock == null || Market.CurrentState != MarketState.Open) return;
                 BuyModal buyModal = Instantiate(BuyModal, ModalContainer, false);
                 buyModal.Setup(Market.ActiveStock.Symbol);
                 modalOpened = true;
@@ -141,8 +141,11 @@ public class MarketPanel : MonoBehaviour {
     }
 
     private void HandleTableRowSelected(StockTableRow row) {
-        if (Market.MarketDayStarted) {
+        if (Market.CurrentState == MarketState.Open) {
             SetContext(MarketPanelContext.RowSelectedAndMarketActive);
+        }
+        else {
+            SetContext(MarketPanelContext.RowSelected);
         }
         Market.SetActiveStock(row.AssignedStockSymbol);
     }

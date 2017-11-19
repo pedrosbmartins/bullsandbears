@@ -9,6 +9,8 @@ public interface IRandomGenerator {
     float NextRandomFloat(float min = 0f, float max = 1f);
 }
 
+public enum MarketState { PreOpen, Open, Ended, Closed };
+
 public class StockMarket : MonoBehaviour, IRandomGenerator {
 
     public int RandomSeed;
@@ -25,22 +27,25 @@ public class StockMarket : MonoBehaviour, IRandomGenerator {
     public TimeTracker TimeTracker;
 
     public delegate void MarketDayStartedHandler();
-    public event MarketDayStartedHandler OnMarketDayStarted;
+    public event MarketDayStartedHandler OnMarketDayStarted = delegate {};
+
+    public delegate void MarketDayEndedHandler();
+    public event MarketDayEndedHandler OnMarketDayEnded = delegate {};
 
     public delegate void StockAddedHandler(Stock stock);
-    public event StockAddedHandler OnStockAdded;
+    public event StockAddedHandler OnStockAdded = delegate {};
 
     public delegate void StockProcessedHandler(Stock stock);
-    public event StockProcessedHandler OnStockProcessed;
+    public event StockProcessedHandler OnStockProcessed = delegate {};
 
     public delegate void ActiveStockProcessedHandler(Stock stock);
-    public event ActiveStockProcessedHandler OnActiveStockProcessed;
+    public event ActiveStockProcessedHandler OnActiveStockProcessed = delegate {};
 
     public delegate void ActiveStockClearedHandler();
-    public event ActiveStockClearedHandler OnActiveStockCleared;
+    public event ActiveStockClearedHandler OnActiveStockCleared = delegate {};
 
     public Stock ActiveStock { get; private set; }
-    public bool MarketDayStarted { get; private set; }
+    public MarketState CurrentState { get; private set; }
 
     private System.Random randomGenerator;
 
@@ -53,19 +58,11 @@ public class StockMarket : MonoBehaviour, IRandomGenerator {
         SetEventsHandlers();
     }
 
-    private void Start() {
+    public void Initialize() {
+        SetState(MarketState.PreOpen);
         InitializeRandomStocks();
-        DisplayPreMarketDayMessages();
         if (OpenMarketOnStart) {
-            BeginMarketDay();
-        }
-    }
-
-    private void Update() {
-        if (Input.GetKeyUp(KeyCode.Return)) {
-            if (!MarketDayStarted) {
-                BeginMarketDay();
-            }
+            BeginDay();
         }
     }
 
@@ -77,9 +74,7 @@ public class StockMarket : MonoBehaviour, IRandomGenerator {
         Stock stock = new Stock(symbol, companyName, industry, this);
         stockList.Add(stock);
         stock.OnProcessed += HandleStockProcessed;
-        if (OnStockAdded != null) {
-            OnStockAdded(stock);
-        }
+        OnStockAdded(stock);
         return stock;
     }
 
@@ -89,20 +84,22 @@ public class StockMarket : MonoBehaviour, IRandomGenerator {
 
     public void SetActiveStock(string symbol) {
         ActiveStock = stockList.Find(stock => stock.Symbol == symbol);
-        if (ActiveStock != null && OnActiveStockProcessed != null) {
+        if (ActiveStock != null) {
             OnActiveStockProcessed(ActiveStock);
         }
     }
 
     public void ClearActiveStock() {
         ActiveStock = null;
-        if (OnActiveStockCleared != null) {
-            OnActiveStockCleared();
-        }
+        OnActiveStockCleared();
     }
 
     public DateTime GetCurrentTime() {
         return TimeTracker.GetCurrentTime();
+    }
+
+    private void SetState(MarketState state) {
+        CurrentState = state;
     }
 
     private void InitializeRandomGenerator() {
@@ -115,7 +112,7 @@ public class StockMarket : MonoBehaviour, IRandomGenerator {
 
     private void SetEventsHandlers() {
         if (EnableTimeTracker) {
-            TimeTracker.OnMarkedClosed += HandleMarketClosed;
+            TimeTracker.OnMarkedDayEnded += HandleMarketClosed;
         }
     }
 
@@ -133,32 +130,21 @@ public class StockMarket : MonoBehaviour, IRandomGenerator {
         AddStock(company.TickerSymbol, company.Name, company.Industry);
     }
 
-    private void BeginMarketDay() {
-        MarketDayStarted = true;
+    public void BeginDay() {
+        SetState(MarketState.Open);
         if (EnableTimeTracker) {
             TimeTracker.StartTracking();
         }
         stockList.ForEach(stock => StartCoroutine(ProcessStock(stock)));
         DisplayMarketDayStartedMessages();
-        if (OnMarketDayStarted != null) {
-            OnMarketDayStarted();
-        }
+        OnMarketDayStarted();
     }
 
-    private void EndMarketDay() {
-        MarketDayStarted = false;
+    private void EndDay() {
+        SetState(MarketState.Ended);
         StopAllCoroutines(); // stops all "ProcessStock" coroutines
-    }
-
-    private void DisplayPreMarketDayMessages() {
-        var messages = new string[] {
-            "Good morning, day traders",
-            "The market will soon be open",
-            "Press [space] to skip messages",
-            "Press [F1] to display help",
-            "Or press [enter] to start trading",
-        };
-        MessageCentral.Instance.DisplayMessages("Message", messages, false, true);
+        DisplayMarketDayEndedMessages();
+        OnMarketDayEnded();
     }
 
     private void DisplayMarketDayStartedMessages() {
@@ -168,6 +154,11 @@ public class StockMarket : MonoBehaviour, IRandomGenerator {
             "Your current balance target is:",
             "$100,000.00",
         };
+        MessageCentral.Instance.DisplayMessages("Message", messages, true);
+    }
+
+    private void DisplayMarketDayEndedMessages() {
+        var messages = new string[] { "The market is now closed" };
         MessageCentral.Instance.DisplayMessages("Message", messages, true);
     }
 
@@ -197,17 +188,14 @@ public class StockMarket : MonoBehaviour, IRandomGenerator {
     }
 
     private void HandleStockProcessed(Stock stock) {
-        if (OnStockProcessed != null) {
-            OnStockProcessed(stock);
-        }
-        if (ActiveStock != null && ActiveStock.Symbol == stock.Symbol && OnActiveStockProcessed != null) {
+        OnStockProcessed(stock);
+        if (ActiveStock != null && ActiveStock.Symbol == stock.Symbol) {
             OnActiveStockProcessed(ActiveStock);
         }
     }
 
     private void HandleMarketClosed() {
-        Debug.Log("Market day ends");
-        EndMarketDay();
+        EndDay();
     }
 
 }

@@ -4,25 +4,29 @@ using UnityEngine;
 
 public class Player : MonoBehaviour {
 
-    private const float INITIAL_ACCOUNT = 50000;
-
     public delegate void BuyStockHandler(Stock stock);
-    public event BuyStockHandler OnBuyStock;
+    public event BuyStockHandler OnBuyStock = delegate {};
 
     public delegate void SellStockHandler(Stock stock);
-    public event SellStockHandler OnSellStock;
+    public event SellStockHandler OnSellStock = delegate { };
 
-    public delegate void AccountChangHandler();
-    public event AccountChangHandler OnAccountChange;
+    public delegate void AccountChangeHandler();
+    public event AccountChangeHandler OnAccountChange = delegate { };
 
-    public Account Account;
+    public delegate void AllPositionsClosedHandler();
+    public event AllPositionsClosedHandler OnAllPositionsClosed = delegate { };
+
+    public StockMarket Market;
+
+    public Account Account { get; private set; }
 
     public Dictionary<string, int> OwnedStocks { get; private set; }
     public float StocksValue { get; private set; }
 
     public void Awake() {
         OwnedStocks = new Dictionary<string, int>();
-        Account = new Account(INITIAL_ACCOUNT);
+        Account = new Account(GameData.GetBalance());
+        Market.OnMarketDayEnded += HandleMarketDayEnded;
     }
 
     public void Buy(Stock stock, int quantity) {
@@ -34,8 +38,8 @@ public class Player : MonoBehaviour {
         else {
             OwnedStocks.Add(stock.Symbol, quantity);
         }
-        if (OnAccountChange != null) OnAccountChange();
-        if (OnBuyStock != null) OnBuyStock(stock);
+        OnAccountChange();
+        OnBuyStock(stock);
     }
 
     public void Sell(Stock stock) {
@@ -45,8 +49,26 @@ public class Player : MonoBehaviour {
         float amount = stock.CurrentPrice() * OwnedStocks[stock.Symbol];
         Account.Add(amount);
         OwnedStocks.Remove(stock.Symbol);
-        if (OnAccountChange != null) OnAccountChange();
-        if (OnSellStock != null) OnSellStock(stock);
+        OnAccountChange();
+        OnSellStock(stock);
+    }
+
+    private void HandleMarketDayEnded() {
+        StartCoroutine(CloseAllPositions());
+    }
+
+    private IEnumerator CloseAllPositions() {
+        List<string> ownedStocksSymbols = new List<string>(OwnedStocks.Keys);
+        foreach (var symbol in ownedStocksSymbols) {
+            yield return new WaitForSeconds(0.5f);
+            MessageCentral.Instance.DisplayMessage("Message", "Selling remaining " + symbol);
+            Sell(Market.GetStock(symbol));
+        }
+        OnAllPositionsClosed();
+    }
+
+    public void SaveBalance() {
+        GameData.SetBalance(Account.Balance);
     }
 
 }
