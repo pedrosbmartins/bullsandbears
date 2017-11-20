@@ -1,12 +1,13 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class BuyModal : MarketModal {
+public class BuyModal : Modal {
 
     public delegate void BuyModalSubmitHandler(int quantity);
-    public event BuyModalSubmitHandler OnSubmit;
+    public event BuyModalSubmitHandler OnSubmit = delegate {};
 
     public Slider QuantitySlider;
     public Text QuantityField;
@@ -30,11 +31,11 @@ public class BuyModal : MarketModal {
     }
 
     public override void Setup(string stockSymbol) {
-        Title.text = $"BUY {stockSymbol}";
+        Title.text = String.Format("BUY {0}", stockSymbol);
     }
 
     protected override void OnOkButtonClicked() {
-        if (OnSubmit != null) OnSubmit(int.Parse(QuantityField.text));
+        OnSubmit(int.Parse(QuantityField.text));
     }
 
     private void OnQuantityChange(float value) {

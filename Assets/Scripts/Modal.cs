@@ -3,19 +3,18 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public abstract class MarketModal : MonoBehaviour {
+public abstract class Modal : MonoBehaviour {
 
     public delegate void ModalExitHandler();
-    public event ModalExitHandler OnExit;
+    public event ModalExitHandler OnExit = delegate {};
 
     public Text Title;
-
     public Button OkButton;
 
     protected Color defaultButtonColor = Color.white;
     protected Color pressedButtonColor = Color.gray;
 
-    public abstract void Setup(string stockSymbol);
+    public abstract void Setup(string info);
 
     protected virtual void Update() {
         if (Input.GetKeyDown(KeyCode.Return)) {
@@ -26,7 +25,7 @@ public abstract class MarketModal : MonoBehaviour {
         }
         else if (Input.GetKeyUp(KeyCode.Escape)) {
             Destroy(gameObject);
-            if (OnExit != null) OnExit();
+            OnExit();
         }
     }
 

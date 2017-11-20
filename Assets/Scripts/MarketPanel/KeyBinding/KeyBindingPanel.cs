@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class KeyHelperPanel : MonoBehaviour {
+public class KeyBindingPanel : MonoBehaviour {
 
-    public KeyHelperItem KeyBindingItemPrefab;
+    public KeyBindingItem KeyBindingItemPrefab;
 
     public List<KeyBinding> KeyBindings = new List<KeyBinding>();
 
@@ -28,7 +28,7 @@ public class KeyHelperPanel : MonoBehaviour {
     private void RenderItemsByContext(MarketPanelContext context) {
         KeyBindings.ForEach(binding => {
             if (binding.Contexts.Contains(context)) {
-                KeyHelperItem item = Instantiate(KeyBindingItemPrefab, transform, false);
+                KeyBindingItem item = Instantiate(KeyBindingItemPrefab, transform, false);
                 item.SetBinding(binding);
             }
         });

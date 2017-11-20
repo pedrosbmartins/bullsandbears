@@ -27,7 +27,7 @@ public class MarketPanel : MonoBehaviour {
     public Player Player;
 
     public StockTable Table;
-    public KeyHelperPanel KeyBindingPanel;
+    public KeyBindingPanel KeyBindingPanel;
 
     public Transform ModalContainer;
     public BuyModal BuyModal;
@@ -35,7 +35,7 @@ public class MarketPanel : MonoBehaviour {
 
     public MarketPanelContext CurrentContext;
 
-    private bool modalOpened = false;
+    private bool isModalOpened = false;
 
     private void Awake() {
         SetContext(MarketPanelContext.Idle);
@@ -48,8 +48,8 @@ public class MarketPanel : MonoBehaviour {
         KeyBindingPanel.Render(CurrentContext);
     }
 
-    private void Update() {
-        if (!modalOpened) {
+    public void CheckInput() {
+        if (!isModalOpened) {
             InterceptNavigationKeys();
             InterceptActionKeys();
         }
@@ -89,7 +89,7 @@ public class MarketPanel : MonoBehaviour {
                 if (Market.ActiveStock == null || Market.CurrentState != MarketState.Open) return;
                 BuyModal buyModal = Instantiate(BuyModal, ModalContainer, false);
                 buyModal.Setup(Market.ActiveStock.Symbol);
-                modalOpened = true;
+                isModalOpened = true;
                 buyModal.OnSubmit += HandleBuyModalSubmit;
                 buyModal.OnExit += HandleModalExit;
                 break;
@@ -101,7 +101,7 @@ public class MarketPanel : MonoBehaviour {
                 }
                 SellModal sellModal = Instantiate(SellModal, ModalContainer, false);
                 sellModal.Setup(Market.ActiveStock.Symbol);
-                modalOpened = true;
+                isModalOpened = true;
                 sellModal.OnSubmit += HandleSellModalSubmit;
                 sellModal.OnExit += HandleModalExit;
                 break;
@@ -133,7 +133,7 @@ public class MarketPanel : MonoBehaviour {
     }
 
     private void HandleModalExit() {
-        modalOpened = false;
+        isModalOpened = false;
     }
 
     private void HandleStockAdded(Stock stock) {

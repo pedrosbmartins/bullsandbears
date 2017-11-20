@@ -7,6 +7,14 @@ public class Trader : MonoBehaviour {
     public StockMarket Market;
     public Player Player;
     public MarketPanel MarketPanel;
+    public RectTransform ModalContainer;
+    public ExitModal ExitModal;
+
+    public delegate void ExitProgramHandler();
+    public event ExitProgramHandler OnExitProgram = delegate {};
+
+    private bool isModalOpened = false;
+    private bool isProgressSaved = false;
 
     private void Awake() {
         Player.OnAllPositionsClosed += HandleAllPositionsClosed;
@@ -18,15 +26,23 @@ public class Trader : MonoBehaviour {
     }
 
     private void Update() {
-        if (Input.GetKeyDown(KeyCode.Return)) {
-            if (Market.CurrentState == MarketState.PreOpen) {
+        if (!isModalOpened) {
+            if (Market.CurrentState == MarketState.PreOpen &&
+                Input.GetKeyDown(KeyCode.Return)) {
                 Market.BeginDay();
-            }   
-        }
-        else if (Input.GetKeyDown(KeyCode.Escape)) {
-            if (MarketPanel.CurrentContext == MarketPanelContext.Idle) {
-                Debug.Log("escape");
             }
+
+            if (MarketPanel.CurrentContext == MarketPanelContext.Idle) {
+                if (Input.GetKeyUp(KeyCode.Escape)) {
+                    ExitModal modal = Instantiate(ExitModal, ModalContainer, false);
+                    modal.SetMessage(isProgressSaved);
+                    modal.OnExit += HandleModalExit;
+                    modal.OnSubmit += ExitProgram;
+                    isModalOpened = true;
+                }
+            }
+
+            MarketPanel.CheckInput();
         }
     }
 
@@ -55,8 +71,18 @@ public class Trader : MonoBehaviour {
     }
 
     private void SaveData() {
+        isProgressSaved = true;
         Player.SaveBalance();
         GameData.IncrementDayCount();
+    }
+
+    private void HandleModalExit() {
+        isModalOpened = false;
+    }
+
+    private void ExitProgram() {
+        isModalOpened = false;
+        OnExitProgram();
     }
 
 }

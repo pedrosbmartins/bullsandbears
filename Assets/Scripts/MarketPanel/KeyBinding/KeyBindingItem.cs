@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class KeyHelperItem : MonoBehaviour {
+public class KeyBindingItem : MonoBehaviour {
 
     public Text KeyField;
     public Text ActionField;

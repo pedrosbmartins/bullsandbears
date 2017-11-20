@@ -92,7 +92,7 @@ GameObject:
   - component: {fileID: 114887828858162002}
   - component: {fileID: 114867724256455674}
   m_Layer: 5
-  m_Name: KeyHelperItem
+  m_Name: KeyBindingItem
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -253,7 +253,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 1946440266920444}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 763ee779e89497e40b0b801329b4f7f3, type: 3}
+  m_Script: {fileID: 11500000, guid: a075961268c91c348940fb94329c6772, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   KeyField: {fileID: 114558658637096074}

@@ -1258,7 +1258,7 @@ GameObject:
   - component: {fileID: 114918926715320474}
   - component: {fileID: 114280472697721524}
   m_Layer: 5
-  m_Name: Key Helper Panel
+  m_Name: Key Binding Panel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2317,7 +2317,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 1829145333453432}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3a3d143317efd8044aadffa16d016904, type: 3}
+  m_Script: {fileID: 11500000, guid: fc41659cd998075498a01046d4602b4c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   KeyBindingItemPrefab: {fileID: 114867724256455674, guid: 15034481ba1215f4898b149d2ab9635e,
@@ -3397,6 +3397,9 @@ MonoBehaviour:
   Market: {fileID: 114691812604211546}
   Player: {fileID: 114659143655091844}
   MarketPanel: {fileID: 114771954006959182}
+  ModalContainer: {fileID: 224585690313365426}
+  ExitModal: {fileID: 114138330982999814, guid: 1c36557484cb1b24f9e62d5687d109f7,
+    type: 2}
 --- !u!114 &114585721549147824
 MonoBehaviour:
   m_ObjectHideFlags: 1

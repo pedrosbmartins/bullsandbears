@@ -57,7 +57,7 @@ GameObject:
   - component: {fileID: 224023791565411788}
   - component: {fileID: 222356849365002794}
   - component: {fileID: 114706357817864548}
-  - component: {fileID: 114841374510765912}
+  - component: {fileID: 114138330982999814}
   m_Layer: 5
   m_Name: ExitModal
   m_TagString: Untagged
@@ -387,6 +387,20 @@ MonoBehaviour:
   m_ChildForceExpandHeight: 1
   m_ChildControlWidth: 1
   m_ChildControlHeight: 1
+--- !u!114 &114138330982999814
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1114828587053816}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f175a26595343eb4b89873d34d307517, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Title: {fileID: 114933985918384638}
+  OkButton: {fileID: 114837812458606902}
+  Message: {fileID: 114718575730705192}
 --- !u!114 &114177165359574244
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -903,19 +917,6 @@ MonoBehaviour:
       m_Calls: []
     m_TypeName: UnityEngine.UI.Button+ButtonClickedEvent, UnityEngine.UI, Version=1.0.0.0,
       Culture=neutral, PublicKeyToken=null
---- !u!114 &114841374510765912
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1114828587053816}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 61e7586e344019b4d9eb6713d93cb569, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Title: {fileID: 114933985918384638}
-  OkButton: {fileID: 114837812458606902}
 --- !u!114 &114883347203303306
 MonoBehaviour:
   m_ObjectHideFlags: 1
