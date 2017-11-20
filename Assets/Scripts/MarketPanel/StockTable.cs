@@ -6,10 +6,10 @@ using UnityEngine.UI;
 public class StockTable : MonoBehaviour {
 
     public delegate void RowSelectedHandler(StockTableRow row);
-    public event RowSelectedHandler OnRowSelected;
+    public event RowSelectedHandler OnRowSelected = delegate {};
 
     public delegate void RowSelectionClearedHandler();
-    public event RowSelectionClearedHandler OnRowSelectionCleared;
+    public event RowSelectionClearedHandler OnRowSelectionCleared = delegate {};
 
     public StockTableRow StockTableRowPrefab;
 
@@ -32,6 +32,23 @@ public class StockTable : MonoBehaviour {
         SelectCurrentRow();
     }
 
+    public void DeselectRows() {
+        if (selectedRowIndex != null) {
+            rows.ForEach(row => row.Deselect());
+            selectedRowIndex = null;
+            HandleRowSelectionChanged();
+        }
+    }
+
+    public StockTableRow GetCurrentRow() {
+        if (selectedRowIndex != null) {
+            return rows[(int)selectedRowIndex];
+        }
+        else {
+            return null;
+        }
+    }
+
     private void SetCurrentRow(int? index) {
         selectedRowIndex = index;
     }
@@ -40,7 +57,8 @@ public class StockTable : MonoBehaviour {
         int currentIndex = selectedRowIndex ?? -1;
         int offsetIndex = currentIndex + offset;
         if (offset > 0) {
-            selectedRowIndex = (offsetIndex > rows.Count - 1) ? rows.Count - 1 : offsetIndex;
+            int lastIndex = rows.Count - 1;
+            selectedRowIndex = (offsetIndex > lastIndex) ? lastIndex : offsetIndex;
         }
         else if (offset < 0) {
             selectedRowIndex = (currentIndex == -1) ? rows.Count - 1
@@ -55,20 +73,12 @@ public class StockTable : MonoBehaviour {
         HandleRowSelectionChanged();
     }
 
-    public void DeselectRows() {
-        if (selectedRowIndex != null) {
-            rows.ForEach(row => row.Deselect());
-            selectedRowIndex = null;
-            HandleRowSelectionChanged();
-        }
-    }
-
     private void HandleRowSelectionChanged() {
         if (selectedRowIndex == null) {
-            if (OnRowSelectionCleared != null) OnRowSelectionCleared();
+            OnRowSelectionCleared();
         }
         else {
-            if (OnRowSelected != null) OnRowSelected(CurrentRow());
+            OnRowSelected(CurrentRow());
         }
     }
 

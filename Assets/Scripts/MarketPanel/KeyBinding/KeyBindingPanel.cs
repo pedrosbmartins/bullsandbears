@@ -40,6 +40,7 @@ public class KeyBindingPanel : MonoBehaviour {
             KeyCode.F1,
             new List<MarketPanelContext>() {
                 MarketPanelContext.Idle,
+                MarketPanelContext.RowSelected,
                 MarketPanelContext.RowSelectedAndMarketActive
             }
         );

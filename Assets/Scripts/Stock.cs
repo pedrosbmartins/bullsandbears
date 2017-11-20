@@ -53,6 +53,15 @@ public class Stock {
         return PriceHistory.Last();
     }
 
+    public float CurrentPriceChange() {
+        if (PriceHistory.Count <= 1) {
+            return 0f;
+        }
+        else {
+            return PriceHistory.Last() - PriceHistory[PriceHistory.Count - 2];
+        }
+    }
+
     public float CurrentVolume() {
         return VolumeHistory.Last();
     }

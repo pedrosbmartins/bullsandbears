@@ -99,6 +99,9 @@ public class Terminal : MonoBehaviour {
             case CommandAction.Trader:
                 HandleTraderCommand();
                 break;
+            case CommandAction.Shutdown:
+                HandleShutdownCommand();
+                break;
             default:
                 DisplayTextLine("Error: Invalid command action", true);
                 break;
@@ -132,6 +135,7 @@ public class Terminal : MonoBehaviour {
                 );
                 return;
             }
+            DisplayTextLine("Terminal color changed", true);
             Monitor.ChangeTerminalColor(color);
             GameData.SetTerminalColor(color);
         }
@@ -185,6 +189,17 @@ public class Terminal : MonoBehaviour {
         RunTraderProgram();
     }
 
+    private void HandleShutdownCommand() {
+        StartCoroutine(Shutdown());
+    }
+
+    private IEnumerator Shutdown() {
+        InputLine.Hide();
+        DisplayTextLine("Shutting down the system...");
+        yield return new WaitForSeconds(2f);
+        Application.Quit();
+    }
+
     private void HandleResetCommand() {
         DisplayTextLine("Are you sure you want to reset all data?");
         DisplayTextLine("(Type 'yes', or ignore)", true);
@@ -222,6 +237,7 @@ public class Terminal : MonoBehaviour {
             new Command("color r,g,b", @"^(color|c) (\d{1,3}),(\d{1,3}),(\d{1,3})$", "Set terminal color (0-255)", CommandAction.Color),
             new Command("help", @"^(help|h)$", "Display all available commands", CommandAction.Help),
             new Command("reset", @"^(reset|r)$", "Reset all data", CommandAction.Reset),
+            new Command("shutdown", @"^(shutdown|s)$", "Shutdown the system", CommandAction.Shutdown),
             new Command("trader", @"^(trader|t)$", "Run trader program", CommandAction.Trader),       
         };
     }
@@ -244,4 +260,4 @@ public class Command {
 
 }
 
-public enum CommandAction { Color, Help, Reset, Trader };
+public enum CommandAction { Color, Help, Reset, Shutdown, Trader };

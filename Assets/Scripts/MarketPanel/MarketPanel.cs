@@ -39,6 +39,7 @@ public class MarketPanel : MonoBehaviour {
 
     private void Awake() {
         SetContext(MarketPanelContext.Idle);
+        Market.OnMarketDayStarted += HandleMarketDayStarted;
         Market.OnStockAdded += HandleStockAdded;
         Table.OnRowSelected += HandleTableRowSelected;
         Table.OnRowSelectionCleared += HandleTableRowSelectionCleared;
@@ -134,6 +135,12 @@ public class MarketPanel : MonoBehaviour {
 
     private void HandleModalExit() {
         isModalOpened = false;
+    }
+
+    private void HandleMarketDayStarted() {
+        if (CurrentContext == MarketPanelContext.RowSelected) {
+            HandleTableRowSelected(Table.GetCurrentRow());
+        }
     }
 
     private void HandleStockAdded(Stock stock) {

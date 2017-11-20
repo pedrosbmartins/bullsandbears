@@ -60,7 +60,7 @@ public class StockTableRow : MonoBehaviour {
         StocksOwnedTextField.text = CalculateOwnedCount().ToString();
         VolumeTextField.text = stock.CurrentVolume().ToString("N2");
         PriceTextField.text = stock.CurrentPrice().ToString("N2");
-        ChangeTextField.text = "+0.00";
+        ChangeTextField.text = stock.CurrentPriceChange().ToString("N2");
         TrendTextField.text = stock.CurrentTrend().ToString("N3");
     }
 
