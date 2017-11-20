@@ -13,6 +13,8 @@ public enum MarketState { PreOpen, Open, Ended, Closed };
 
 public class StockMarket : MonoBehaviour, IRandomGenerator {
 
+    public Player Player;
+
     public int RandomSeed;
 
     public int StockCount;
@@ -112,8 +114,9 @@ public class StockMarket : MonoBehaviour, IRandomGenerator {
 
     private void SetEventsHandlers() {
         if (EnableTimeTracker) {
-            TimeTracker.OnMarkedDayEnded += HandleMarketClosed;
+            TimeTracker.OnMarkedDayEnded += HandleMarketDayEnded;
         }
+        Player.OnAllPositionsClosed += HandleAllPositionsClosed;
     }
 
     private void InitializeRandomStocks() {
@@ -194,8 +197,12 @@ public class StockMarket : MonoBehaviour, IRandomGenerator {
         }
     }
 
-    private void HandleMarketClosed() {
+    private void HandleMarketDayEnded() {
         EndDay();
+    }
+
+    private void HandleAllPositionsClosed() {
+        SetState(MarketState.Closed);
     }
 
 }

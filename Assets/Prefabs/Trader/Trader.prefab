@@ -3400,6 +3400,8 @@ MonoBehaviour:
   ModalContainer: {fileID: 224585690313365426}
   ExitModal: {fileID: 114138330982999814, guid: 1c36557484cb1b24f9e62d5687d109f7,
     type: 2}
+  DayDisplayPrefab: {fileID: 114240705730893700, guid: 042d71b5b28b3ac4ca3f686b1ddb7a0f,
+    type: 2}
 --- !u!114 &114585721549147824
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -3772,6 +3774,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f987ae118427e0546b65cfbd8776a62e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  Player: {fileID: 114659143655091844}
   RandomSeed: 0
   StockCount: 10
   ActivateFirstStock: 0

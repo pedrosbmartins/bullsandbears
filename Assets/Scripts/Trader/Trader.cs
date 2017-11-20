@@ -9,10 +9,15 @@ public class Trader : MonoBehaviour {
     public MarketPanel MarketPanel;
     public RectTransform ModalContainer;
     public ExitModal ExitModal;
+    public DayDisplay DayDisplayPrefab;
 
     public delegate void ExitProgramHandler();
-    public event ExitProgramHandler OnExitProgram = delegate {};
+    public event ExitProgramHandler OnExitProgram = delegate { };
 
+    public delegate void RebootProgramHandler();
+    public event RebootProgramHandler OnRebootProgram = delegate { };
+
+    private bool isDisplayingDayCount = true;
     private bool isModalOpened = false;
     private bool isProgressSaved = false;
 
@@ -21,15 +26,25 @@ public class Trader : MonoBehaviour {
     }
 
     private void Start() {
+        DayDisplay dayDisplay = Instantiate(DayDisplayPrefab, gameObject.transform, false);
+        dayDisplay.OnHide += StartTraderProgram;
+    }
+
+    private void StartTraderProgram() {
+        isDisplayingDayCount = false;
         DisplayInitialMessages();
         Market.Initialize();
     }
 
     private void Update() {
-        if (!isModalOpened) {
-            if (Market.CurrentState == MarketState.PreOpen &&
-                Input.GetKeyDown(KeyCode.Return)) {
-                Market.BeginDay();
+        if (!isModalOpened && !isDisplayingDayCount) {
+            if (Input.GetKeyDown(KeyCode.Return)) {
+                if (Market.CurrentState == MarketState.PreOpen) {
+                    Market.BeginDay();
+                }
+                else if (Market.CurrentState == MarketState.Closed) {
+                    RebootProgram();
+                }
             }
 
             if (MarketPanel.CurrentContext == MarketPanelContext.Idle) {
@@ -44,6 +59,10 @@ public class Trader : MonoBehaviour {
 
             MarketPanel.CheckInput();
         }
+    }
+
+    private void OnDestroy() {
+        MessageCentral.Instance.Destroy();
     }
 
     private void DisplayInitialMessages() {
@@ -83,6 +102,11 @@ public class Trader : MonoBehaviour {
     private void ExitProgram() {
         isModalOpened = false;
         OnExitProgram();
+    }
+
+    private void RebootProgram() {
+        isModalOpened = false;
+        OnRebootProgram();
     }
 
 }

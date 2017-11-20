@@ -97,7 +97,7 @@ public class Terminal : MonoBehaviour {
                 HandleResetCommand();
                 break;
             case CommandAction.Trader:
-                RunTraderProgram();
+                HandleTraderCommand();
                 break;
             default:
                 DisplayTextLine("Error: Invalid command action", true);
@@ -125,9 +125,23 @@ public class Terminal : MonoBehaviour {
     private void ChangeTerminalColor(int r, int g, int b) {
         if (Monitor != null) {
             var color = new Color(r / 255f, g / 255f, b / 255f);
+            if (IsVisibilityLow(color)) {
+                DisplayTextLine(
+                    String.Format("Selected color has low visibility, please choose another", r, g, b),
+                    true
+                );
+                return;
+            }
             Monitor.ChangeTerminalColor(color);
             GameData.SetTerminalColor(color);
         }
+    }
+
+    private bool IsVisibilityLow(Color color) {
+        float threshold = 30f / 255f;
+        return color.r <= threshold &&
+               color.g <= threshold &&
+               color.b <= threshold;
     }
 
     private void DisplayAllCommands() {
@@ -138,10 +152,24 @@ public class Terminal : MonoBehaviour {
         DisplayMargin();
     }
 
+    private void HandleTraderCommand() {
+        StartCoroutine(TraderBoot());
+    }
+
+    private IEnumerator TraderBoot() {
+        InputLine.Hide();
+        DisplayTextLine("Starting trader program...");
+        yield return new WaitForSeconds(2f);
+        InputLine.Show();
+        DisplayMargin();
+        RunTraderProgram();
+    }
+
     private void RunTraderProgram() {
         gameObject.SetActive(false);
         Trader = Instantiate(TraderPrefab, Screen, false);
         Trader.OnExitProgram += HandleTraderExit;
+        Trader.OnRebootProgram += HandleTraderReboot;
     }
 
     private void HandleTraderExit() {
@@ -149,6 +177,12 @@ public class Terminal : MonoBehaviour {
         Destroy(Trader.gameObject);
         gameObject.SetActive(true);
         InputLine.Focus();
+    }
+
+    private void HandleTraderReboot() {
+        Trader.OnRebootProgram -= HandleTraderReboot;
+        Destroy(Trader.gameObject);
+        RunTraderProgram();
     }
 
     private void HandleResetCommand() {
@@ -186,9 +220,9 @@ public class Terminal : MonoBehaviour {
     private List<Command> GenerateCommandList() {
         return new List<Command>() {
             new Command("color r,g,b", @"^(color|c) (\d{1,3}),(\d{1,3}),(\d{1,3})$", "Set terminal color (0-255)", CommandAction.Color),
-            new Command("help", @"^help|h$", "Display all available commands", CommandAction.Help),
-            new Command("reset", @"^reset|r$", "Reset all data", CommandAction.Reset),
-            new Command("trader", @"^trader|t$", "Run trader program", CommandAction.Trader),       
+            new Command("help", @"^(help|h)$", "Display all available commands", CommandAction.Help),
+            new Command("reset", @"^(reset|r)$", "Reset all data", CommandAction.Reset),
+            new Command("trader", @"^(trader|t)$", "Run trader program", CommandAction.Trader),       
         };
     }
 

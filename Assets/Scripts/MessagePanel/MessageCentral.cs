@@ -39,4 +39,8 @@ public class MessageCentral {
         }
     }
 
+    public void Destroy() {
+        _instance = null;
+    }
+
 }
