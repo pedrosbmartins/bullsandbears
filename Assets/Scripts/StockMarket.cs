@@ -20,6 +20,7 @@ public class StockMarket : MonoBehaviour, IRandomGenerator {
     public int StockCount;
     public bool ActivateFirstStock;
 
+    public bool AutoInitialize;
     public bool OpenMarketOnStart;
 
     public float MinStockProcessingDuration = 1f;
@@ -58,6 +59,12 @@ public class StockMarket : MonoBehaviour, IRandomGenerator {
         InitializeRandomGenerator();
         InitializeRandomCompanyList();
         SetEventsHandlers();
+    }
+
+    private void Start() {
+        if (AutoInitialize) {
+            Initialize();
+        }
     }
 
     public void Initialize() {
