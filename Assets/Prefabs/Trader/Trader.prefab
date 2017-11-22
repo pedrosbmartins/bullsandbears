@@ -3778,6 +3778,7 @@ MonoBehaviour:
   RandomSeed: 0
   StockCount: 10
   ActivateFirstStock: 0
+  AutoInitialize: 0
   OpenMarketOnStart: 0
   MinStockProcessingDuration: 1
   MaxStockProcessingDuration: 5
@@ -4411,7 +4412,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   TimeField: {fileID: 114689399782115672}
-  MarketDayDurationInSeconds: 10
+  MarketDayDurationInSeconds: 90
   InfiniteDay: 0
 --- !u!114 &114838937984791674
 MonoBehaviour:

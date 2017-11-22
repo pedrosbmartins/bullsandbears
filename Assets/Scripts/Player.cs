@@ -53,6 +53,10 @@ public class Player : MonoBehaviour {
         OnSellStock(stock);
     }
 
+    public bool Affords(Stock stock, int quantity) {
+        return stock.CurrentPrice() * quantity <= Account.Balance;
+    }
+
     private void HandleMarketDayEnded() {
         StartCoroutine(CloseAllPositions());
     }

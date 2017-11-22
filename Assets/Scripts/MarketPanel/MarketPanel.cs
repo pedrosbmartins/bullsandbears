@@ -125,7 +125,17 @@ public class MarketPanel : MonoBehaviour {
 
     private void HandleBuyModalSubmit(int quantity) {
         HandleModalExit();
-        Player.Buy(Market.ActiveStock, quantity);
+
+        Stock stock = Market.ActiveStock;
+        if (Player.Affords(stock, quantity)) {
+            Player.Buy(stock, quantity);
+        }
+        else {
+            var messages = new string[] {
+                String.Format("Cannot afford {0} {1} stocks", quantity, stock.Symbol)
+            };
+            MessageCentral.Instance.DisplayMessages("Message", messages, false);
+        }
     }
 
     private void HandleSellModalSubmit() {
