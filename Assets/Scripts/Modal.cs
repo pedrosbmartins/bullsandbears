@@ -8,13 +8,23 @@ public abstract class Modal : MonoBehaviour {
     public delegate void ModalExitHandler();
     public event ModalExitHandler OnExit = delegate {};
 
+    public delegate void SellModalSubmitHandler();
+    public event SellModalSubmitHandler OnSubmit = delegate {};
+
     public Text Title;
+    public Text Message;
     public Button OkButton;
 
     protected Color defaultButtonColor = Color.white;
     protected Color pressedButtonColor = Color.gray;
 
-    public abstract void Setup(string info);
+    public void SetTitle(string title) {
+        Title.text = title;
+    }
+
+    public void SetMessage(string message) {
+        Message.text = message;
+    }
 
     protected virtual void Update() {
         if (Input.GetKeyDown(KeyCode.Return)) {
@@ -24,9 +34,13 @@ public abstract class Modal : MonoBehaviour {
             StartCoroutine(OkButtonClick());
         }
         else if (Input.GetKeyUp(KeyCode.Escape)) {
-            Destroy(gameObject);
-            OnExit();
+            Exit();
         }
+    }
+
+    private void Exit() {
+        Destroy(gameObject);
+        OnExit();
     }
 
     protected IEnumerator OkButtonClick() {
@@ -36,6 +50,8 @@ public abstract class Modal : MonoBehaviour {
         OnOkButtonClicked();
     }
 
-    protected abstract void OnOkButtonClicked();
+    protected virtual void OnOkButtonClicked() {
+        OnSubmit();
+    }
 
 }

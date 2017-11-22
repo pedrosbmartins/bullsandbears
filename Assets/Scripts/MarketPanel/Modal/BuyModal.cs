@@ -7,7 +7,7 @@ using UnityEngine.UI;
 public class BuyModal : Modal {
 
     public delegate void BuyModalSubmitHandler(int quantity);
-    public event BuyModalSubmitHandler OnSubmit = delegate {};
+    public event BuyModalSubmitHandler OnQuantitySubmit = delegate {};
 
     public Slider QuantitySlider;
     public Text QuantityField;
@@ -30,12 +30,8 @@ public class BuyModal : Modal {
         }
     }
 
-    public override void Setup(string stockSymbol) {
-        Title.text = String.Format("BUY {0}", stockSymbol);
-    }
-
     protected override void OnOkButtonClicked() {
-        OnSubmit(int.Parse(QuantityField.text));
+        OnQuantitySubmit(int.Parse(QuantityField.text));
     }
 
     private void OnQuantityChange(float value) {

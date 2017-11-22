@@ -8,7 +8,7 @@ public class Trader : MonoBehaviour {
     public Player Player;
     public MarketPanel MarketPanel;
     public RectTransform ModalContainer;
-    public ExitModal ExitModal;
+    public AlertModal AlertModalPrefab;
     public DayDisplay DayDisplayPrefab;
 
     public delegate void ExitProgramHandler();
@@ -49,10 +49,12 @@ public class Trader : MonoBehaviour {
 
             if (MarketPanel.CurrentContext == MarketPanelContext.Idle) {
                 if (Input.GetKeyUp(KeyCode.Escape)) {
-                    ExitModal modal = Instantiate(ExitModal, ModalContainer, false);
-                    modal.SetMessage(isProgressSaved);
-                    modal.OnExit += HandleModalExit;
-                    modal.OnSubmit += ExitProgram;
+                    AlertModal alertModal = Instantiate(AlertModalPrefab, ModalContainer, false);
+                    string message = isProgressSaved ? "Exit to terminal?" : "You'll lose this day progress. Continue?";
+                    alertModal.SetTitle("EXIT");
+                    alertModal.SetMessage(message);
+                    alertModal.OnExit += HandleModalExit;
+                    alertModal.OnSubmit += ExitProgram;
                     isModalOpened = true;
                 }
             }

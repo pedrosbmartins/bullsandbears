@@ -871,8 +871,9 @@ MonoBehaviour:
   Table: {fileID: 114905910801080024}
   KeyBindingPanel: {fileID: 114846173651821528}
   ModalContainer: {fileID: 0}
-  BuyModal: {fileID: 114430853264308332, guid: 941ce16ec8bf11c47aebcb6105a9deab, type: 2}
-  SellModal: {fileID: 114841374510765912, guid: a37ed7535b5cd7e4d81b06b3137a1c8c,
+  BuyModalPrefab: {fileID: 114430853264308332, guid: 941ce16ec8bf11c47aebcb6105a9deab,
+    type: 2}
+  AlertModalPrefab: {fileID: 114188390220758498, guid: 1c36557484cb1b24f9e62d5687d109f7,
     type: 2}
   CurrentContext: 0
 --- !u!114 &114905910801080024

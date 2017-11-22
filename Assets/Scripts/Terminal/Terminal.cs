@@ -7,7 +7,7 @@ using UnityEngine.UI;
 
 public class Terminal : MonoBehaviour {
 
-    private float bootDelayBase = 0.6f; // not const so you can speedup boot with <enter>
+    private float bootDelayBase = 0.8f; // not const so you can speedup boot with <enter>
 
     public RectTransform Screen;
     public ScrollRect Scroll;
@@ -215,6 +215,7 @@ public class Terminal : MonoBehaviour {
     }
 
     private IEnumerator DisplayBootMessage() {
+        yield return new WaitForSeconds(bootDelayBase);
         DisplayTextLine("Bulls & Bears Terminal Version 1.0");
         yield return new WaitForSeconds(bootDelayBase / 2);
         DisplayTextLine("(C) Copyleft Bulls & Bears Inc. 1986", true);

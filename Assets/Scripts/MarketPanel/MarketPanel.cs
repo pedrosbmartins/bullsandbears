@@ -30,8 +30,8 @@ public class MarketPanel : MonoBehaviour {
     public KeyBindingPanel KeyBindingPanel;
 
     public Transform ModalContainer;
-    public BuyModal BuyModal;
-    public SellModal SellModal;
+    public BuyModal BuyModalPrefab;
+    public AlertModal AlertModalPrefab;
 
     public MarketPanelContext CurrentContext;
 
@@ -88,11 +88,7 @@ public class MarketPanel : MonoBehaviour {
                 break;
             case KeyBindingAction.Buy:
                 if (Market.ActiveStock == null || Market.CurrentState != MarketState.Open) return;
-                BuyModal buyModal = Instantiate(BuyModal, ModalContainer, false);
-                buyModal.Setup(Market.ActiveStock.Symbol);
-                isModalOpened = true;
-                buyModal.OnSubmit += HandleBuyModalSubmit;
-                buyModal.OnExit += HandleModalExit;
+                DisplayBuyModal();
                 break;
             case KeyBindingAction.Sell:
                 if  (Market.ActiveStock == null 
@@ -100,13 +96,61 @@ public class MarketPanel : MonoBehaviour {
                  ||  Player.OwnedStocks[Market.ActiveStock.Symbol] == 0) {
                     return;
                 }
-                SellModal sellModal = Instantiate(SellModal, ModalContainer, false);
-                sellModal.Setup(Market.ActiveStock.Symbol);
-                isModalOpened = true;
-                sellModal.OnSubmit += HandleSellModalSubmit;
-                sellModal.OnExit += HandleModalExit;
+                DisplaySellModal();
                 break;
         }
+    }
+
+    private void DisplayBuyModal() {
+        BuyModal buyModal = Instantiate(BuyModalPrefab, ModalContainer, false);
+        buyModal.SetTitle(String.Format("BUY {0}", Market.ActiveStock.Symbol));
+        isModalOpened = true;
+        buyModal.OnQuantitySubmit += HandleBuyModalSubmit;
+        buyModal.OnExit += HandleModalExit;
+    }
+
+    private void DisplaySellModal() {
+        AlertModal modal = Instantiate(AlertModalPrefab, ModalContainer, false);
+        modal.SetTitle(String.Format("SELL {0}", Market.ActiveStock.Symbol));
+        modal.SetMessage("Sell all stocks?");
+        isModalOpened = true;
+        modal.OnSubmit += HandleSellModalSubmit;
+        modal.OnExit += HandleModalExit;
+    }
+
+    private void DisplayInsufficientFundsModal(string stockSymbol, int quantity) {
+        AlertModal modal = Instantiate(AlertModalPrefab, ModalContainer, false);
+        modal.SetTitle("WARNING");
+        modal.SetMessage(
+            String.Format("Insufficient funds to buy {0} {1} stocks", quantity, stockSymbol)
+        );
+        isModalOpened = true;
+        modal.OnSubmit += HandleCantAffordModalExit;
+        modal.OnExit += HandleCantAffordModalExit;
+    }
+
+    private void HandleBuyModalSubmit(int quantity) {
+        HandleModalExit();
+        Stock stock = Market.ActiveStock;
+        if (Player.Affords(stock, quantity)) {
+            Player.Buy(stock, quantity);
+        }
+        else {
+            DisplayInsufficientFundsModal(stock.Symbol, quantity);
+        }
+    }
+
+    private void HandleCantAffordModalExit() {
+        DisplayBuyModal();
+    }
+
+    private void HandleSellModalSubmit() {
+        HandleModalExit();
+        Player.Sell(Market.ActiveStock);
+    }
+
+    private void HandleModalExit() {
+        isModalOpened = false;
     }
 
     private void DisplayHelpMessages() {
@@ -121,30 +165,6 @@ public class MarketPanel : MonoBehaviour {
             "That's it!"
         };
         MessageCentral.Instance.DisplayMessages("Help", messages, true);
-    }
-
-    private void HandleBuyModalSubmit(int quantity) {
-        HandleModalExit();
-
-        Stock stock = Market.ActiveStock;
-        if (Player.Affords(stock, quantity)) {
-            Player.Buy(stock, quantity);
-        }
-        else {
-            var messages = new string[] {
-                String.Format("Cannot afford {0} {1} stocks", quantity, stock.Symbol)
-            };
-            MessageCentral.Instance.DisplayMessages("Message", messages, false);
-        }
-    }
-
-    private void HandleSellModalSubmit() {
-        HandleModalExit();
-        Player.Sell(Market.ActiveStock);
-    }
-
-    private void HandleModalExit() {
-        isModalOpened = false;
     }
 
     private void HandleMarketDayStarted() {

@@ -3398,7 +3398,7 @@ MonoBehaviour:
   Player: {fileID: 114659143655091844}
   MarketPanel: {fileID: 114771954006959182}
   ModalContainer: {fileID: 224585690313365426}
-  ExitModal: {fileID: 114138330982999814, guid: 1c36557484cb1b24f9e62d5687d109f7,
+  AlertModalPrefab: {fileID: 114188390220758498, guid: 1c36557484cb1b24f9e62d5687d109f7,
     type: 2}
   DayDisplayPrefab: {fileID: 114240705730893700, guid: 042d71b5b28b3ac4ca3f686b1ddb7a0f,
     type: 2}
@@ -4144,8 +4144,9 @@ MonoBehaviour:
   Table: {fileID: 114484816183877656}
   KeyBindingPanel: {fileID: 114280472697721524}
   ModalContainer: {fileID: 224585690313365426}
-  BuyModal: {fileID: 114430853264308332, guid: 941ce16ec8bf11c47aebcb6105a9deab, type: 2}
-  SellModal: {fileID: 114841374510765912, guid: a37ed7535b5cd7e4d81b06b3137a1c8c,
+  BuyModalPrefab: {fileID: 114430853264308332, guid: 941ce16ec8bf11c47aebcb6105a9deab,
+    type: 2}
+  AlertModalPrefab: {fileID: 114188390220758498, guid: 1c36557484cb1b24f9e62d5687d109f7,
     type: 2}
   CurrentContext: 0
 --- !u!114 &114773153310275464
