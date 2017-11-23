@@ -33,6 +33,8 @@ public class MarketPanel : MonoBehaviour {
     public BuyModal BuyModalPrefab;
     public AlertModal AlertModalPrefab;
 
+    public AudioClip SellSoundEffect;
+
     public MarketPanelContext CurrentContext;
 
     private bool isModalOpened = false;
@@ -146,6 +148,7 @@ public class MarketPanel : MonoBehaviour {
 
     private void HandleSellModalSubmit() {
         HandleModalExit();
+        AudioSource.PlayClipAtPoint(SellSoundEffect, Vector3.one);
         Player.Sell(Market.ActiveStock);
     }
 
@@ -156,12 +159,13 @@ public class MarketPanel : MonoBehaviour {
     private void DisplayHelpMessages() {
         var messages = new string[] {
             "B&B Tutorial:",
+            "[enter] to start market day",
             "[up] / [down] arrows select stocks",
             "[F2] to buy, [F3] to sell",
             "TREND shows price trend direction",
             "VOLUME indicates trend strenth",
             "Watchout for the stock's CEILING:",
-            "It may lose value quickly around it",
+            "Prices may fall quickly around it",
             "That's it!"
         };
         MessageCentral.Instance.DisplayMessages("Help", messages, true);

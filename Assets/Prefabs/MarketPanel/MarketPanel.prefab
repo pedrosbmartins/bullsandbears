@@ -875,6 +875,7 @@ MonoBehaviour:
     type: 2}
   AlertModalPrefab: {fileID: 114188390220758498, guid: 1c36557484cb1b24f9e62d5687d109f7,
     type: 2}
+  SellSoundEffect: {fileID: 8300000, guid: a90209ecfd369b54b80ce6fd0e5af5e0, type: 3}
   CurrentContext: 0
 --- !u!114 &114905910801080024
 MonoBehaviour:

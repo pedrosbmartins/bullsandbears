@@ -6,6 +6,8 @@ using UnityEngine.UI;
 
 public class DayDisplay : MonoBehaviour {
 
+    private const float DISPLAY_SECONDS = 2f;
+
     public Text Label;
 
     public delegate void HideHandler();
@@ -23,7 +25,7 @@ public class DayDisplay : MonoBehaviour {
 
     private IEnumerator Display() {
         Label.text = String.Format("Day {0}", GameData.GetDayCount());
-        yield return new WaitForSeconds(5f);
+        yield return new WaitForSeconds(DISPLAY_SECONDS);
         Hide();
     }
 
