@@ -6,7 +6,7 @@ using UnityEngine.UI;
 
 public class DayDisplay : MonoBehaviour {
 
-    private const float DISPLAY_SECONDS = 2f;
+    private const float DISPLAY_SECONDS = 1.6f;
 
     public Text Label;
 

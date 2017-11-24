@@ -289,6 +289,7 @@ GameObject:
   - component: {fileID: 222610555926854994}
   - component: {fileID: 114172449335384880}
   - component: {fileID: 114580717132427782}
+  - component: {fileID: 82975082668701308}
   m_Layer: 5
   m_Name: Trader
   m_TagString: Untagged
@@ -1534,6 +1535,86 @@ Transform:
   m_Father: {fileID: 224585690313365426}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!82 &82975082668701308
+AudioSource:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1168610089393164}
+  m_Enabled: 1
+  serializedVersion: 4
+  OutputAudioMixerGroup: {fileID: 0}
+  m_audioClip: {fileID: 8300000, guid: 8accfbdcd672f424e9121005d6897694, type: 3}
+  m_PlayOnAwake: 1
+  m_Volume: 1
+  m_Pitch: 1
+  Loop: 1
+  Mute: 0
+  Spatialize: 0
+  SpatializePostEffects: 0
+  Priority: 128
+  DopplerLevel: 1
+  MinDistance: 1
+  MaxDistance: 500
+  Pan2D: 0
+  rolloffMode: 0
+  BypassEffects: 0
+  BypassListenerEffects: 0
+  BypassReverbZones: 0
+  rolloffCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 2
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+    - serializedVersion: 2
+      time: 1
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  panLevelCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 2
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 0
+  spreadCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 2
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 0
+  reverbZoneMixCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 2
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 0
 --- !u!114 &114000313184320748
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -3400,8 +3481,9 @@ MonoBehaviour:
   ModalContainer: {fileID: 224585690313365426}
   AlertModalPrefab: {fileID: 114188390220758498, guid: 1c36557484cb1b24f9e62d5687d109f7,
     type: 2}
-  DayDisplayPrefab: {fileID: 114240705730893700, guid: 042d71b5b28b3ac4ca3f686b1ddb7a0f,
+  DayDisplayPrefab: {fileID: 114834508329678624, guid: 042d71b5b28b3ac4ca3f686b1ddb7a0f,
     type: 2}
+  MarketClosingMusic: {fileID: 8300000, guid: d0fbd5b5a166e8048aed92c6a90d169f, type: 3}
 --- !u!114 &114585721549147824
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -4414,7 +4496,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   TimeField: {fileID: 114689399782115672}
-  MarketDayDurationInSeconds: 90
+  MarketDayDurationInSeconds: 10
   InfiniteDay: 0
 --- !u!114 &114838937984791674
 MonoBehaviour:

@@ -266,7 +266,7 @@ GameObject:
   - component: {fileID: 114430853264308332}
   m_Layer: 5
   m_Name: BuyModal
-  m_TagString: Untagged
+  m_TagString: Modal
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -737,6 +737,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Title: {fileID: 114984872267194092}
+  Message: {fileID: 0}
   OkButton: {fileID: 114694414932907176}
   QuantitySlider: {fileID: 114632002502807276}
   QuantityField: {fileID: 114781141947419804}

@@ -1,4 +1,18 @@
-﻿using UnityEngine;
+﻿//#<!--
+//#    CRT-simple shader
+//#    https://forum.unity.com/threads/crt-shader.200726/#post-2003264
+//#
+//#    Copyright (C) 2011 DOLLS. Based on cgwg's CRT shader.
+//#
+//#    Modified by fontmas: 2015-03-06
+//#
+//#    This program is free software; you can redistribute it and/or modify it
+//#    under the terms of the GNU General Public License as published by the Free
+//#    Software Foundation; either version 2 of the License, or (at your option)
+//#    any later version.
+//#    -->
+
+using UnityEngine;
 using System.Collections;
 
 public enum CRTScanLinesSizes { S32 = 32, S64 = 64, S128 = 128, S256 = 256, S512 = 512, S1024 = 1024 };

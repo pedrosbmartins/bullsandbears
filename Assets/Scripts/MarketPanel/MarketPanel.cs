@@ -41,7 +41,7 @@ public class MarketPanel : MonoBehaviour {
 
     private void Awake() {
         SetContext(MarketPanelContext.Idle);
-        Market.OnMarketDayStarted += HandleMarketDayStarted;
+        Market.OnDayStarted += HandleMarketDayStarted;
         Market.OnStockAdded += HandleStockAdded;
         Table.OnRowSelected += HandleTableRowSelected;
         Table.OnRowSelectionCleared += HandleTableRowSelectionCleared;
@@ -89,7 +89,7 @@ public class MarketPanel : MonoBehaviour {
                 DisplayHelpMessages();
                 break;
             case KeyBindingAction.Buy:
-                if (Market.ActiveStock == null || Market.CurrentState != MarketState.Open) return;
+                if (Market.ActiveStock == null || Market.CurrentState != MarketState.DayStarted) return;
                 DisplayBuyModal();
                 break;
             case KeyBindingAction.Sell:
@@ -182,7 +182,7 @@ public class MarketPanel : MonoBehaviour {
     }
 
     private void HandleTableRowSelected(StockTableRow row) {
-        if (Market.CurrentState == MarketState.Open) {
+        if (Market.CurrentState == MarketState.DayStarted) {
             SetContext(MarketPanelContext.RowSelectedAndMarketActive);
         }
         else {
@@ -194,6 +194,14 @@ public class MarketPanel : MonoBehaviour {
     private void HandleTableRowSelectionCleared() {
         SetContext(MarketPanelContext.Idle);
         Market.ClearActiveStock();
+    }
+
+    public void DestroyOpenedModals() {
+        if (isModalOpened) {
+            var modals = new List<GameObject>(GameObject.FindGameObjectsWithTag("Modal"));
+            modals.ForEach(modal => Destroy(modal));
+            isModalOpened = false;
+        }
     }
 
 }

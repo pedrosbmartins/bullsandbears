@@ -9,7 +9,7 @@ public interface IRandomGenerator {
     float NextRandomFloat(float min = 0f, float max = 1f);
 }
 
-public enum MarketState { PreOpen, Open, Ended, Closed };
+public enum MarketState { Idle, DayStarted, DayEnded, Closed };
 
 public class StockMarket : MonoBehaviour, IRandomGenerator {
 
@@ -29,11 +29,11 @@ public class StockMarket : MonoBehaviour, IRandomGenerator {
     public bool EnableTimeTracker = true;
     public TimeTracker TimeTracker;
 
-    public delegate void MarketDayStartedHandler();
-    public event MarketDayStartedHandler OnMarketDayStarted = delegate {};
+    public delegate void DayStartedHandler();
+    public event DayStartedHandler OnDayStarted = delegate {};
 
-    public delegate void MarketDayEndedHandler();
-    public event MarketDayEndedHandler OnMarketDayEnded = delegate {};
+    public delegate void DayEndedHandler();
+    public event DayEndedHandler OnDayEnded = delegate {};
 
     public delegate void StockAddedHandler(Stock stock);
     public event StockAddedHandler OnStockAdded = delegate {};
@@ -68,7 +68,7 @@ public class StockMarket : MonoBehaviour, IRandomGenerator {
     }
 
     public void Initialize() {
-        SetState(MarketState.PreOpen);
+        SetState(MarketState.Idle);
         InitializeRandomStocks();
         if (OpenMarketOnStart) {
             BeginDay();
@@ -141,20 +141,20 @@ public class StockMarket : MonoBehaviour, IRandomGenerator {
     }
 
     public void BeginDay() {
-        SetState(MarketState.Open);
+        SetState(MarketState.DayStarted);
         if (EnableTimeTracker) {
             TimeTracker.StartTracking();
         }
         stockList.ForEach(stock => StartCoroutine(ProcessStock(stock)));
         DisplayMarketDayStartedMessages();
-        OnMarketDayStarted();
+        OnDayStarted();
     }
 
     private void EndDay() {
-        SetState(MarketState.Ended);
+        SetState(MarketState.DayEnded);
         StopAllCoroutines(); // stops all "ProcessStock" coroutines
         DisplayMarketDayEndedMessages();
-        OnMarketDayEnded();
+        OnDayEnded();
     }
 
     private void DisplayMarketDayStartedMessages() {

@@ -15,12 +15,12 @@ public class MessageCentral {
         }
     }
 
-    private MessagePanel Panel;
+    private MessagePanel panel;
 
     public MessageCentral() {
         var messagePanel = GameObject.Find("MessagePanel");
         if (messagePanel != null) {
-            Panel = messagePanel.GetComponent<MessagePanel>();
+            panel = messagePanel.GetComponent<MessagePanel>();
         }
         else {
             Debug.Log("Message Central: no MessagePanel object found");
@@ -28,14 +28,14 @@ public class MessageCentral {
     }
 
     public void DisplayMessage(string type, string message) {
-        if (Panel != null) {
-            Panel.DisplayMessage(type, message);
+        if (panel != null) {
+            panel.DisplayMessage(type, message);
         }
     }
 
     public void DisplayMessages(string type, string[] messages, bool separator = false, bool delayFirst = false) {
-        if (Panel != null) {
-            Panel.StartMessageQueue(type, messages, separator, delayFirst);
+        if (panel != null) {
+            panel.StartMessageQueue(type, messages, separator, delayFirst);
         }
     }
 

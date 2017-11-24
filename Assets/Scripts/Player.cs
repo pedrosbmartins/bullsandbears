@@ -26,7 +26,6 @@ public class Player : MonoBehaviour {
     public void Awake() {
         OwnedStocks = new Dictionary<string, int>();
         Account = new Account(GameData.GetBalance());
-        Market.OnMarketDayEnded += HandleMarketDayEnded;
     }
 
     public void Buy(Stock stock, int quantity) {
@@ -57,17 +56,18 @@ public class Player : MonoBehaviour {
         return stock.CurrentPrice() * quantity <= Account.Balance;
     }
 
-    private void HandleMarketDayEnded() {
-        StartCoroutine(CloseAllPositions());
+    public void CloseAllPositions() {
+        StartCoroutine(CloseAllPositionsRoutine());
     }
 
-    private IEnumerator CloseAllPositions() {
+    private IEnumerator CloseAllPositionsRoutine() {
         List<string> ownedStocksSymbols = new List<string>(OwnedStocks.Keys);
         foreach (var symbol in ownedStocksSymbols) {
-            yield return new WaitForSeconds(0.5f);
+            yield return new WaitForSeconds(1.5f);
             MessageCentral.Instance.DisplayMessage("Message", "Selling remaining " + symbol);
             Sell(Market.GetStock(symbol));
         }
+        yield return new WaitForSeconds(1.5f);
         OnAllPositionsClosed();
     }
 

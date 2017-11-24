@@ -121,7 +121,7 @@ public class Terminal : MonoBehaviour {
             ChangeTerminalColor(r, g, b);
         }
         else {
-            DisplayTextLine("Error: Could not change terminal color", true);
+            DisplayTextLine("Error: Could not parse terminal color", true);
         }
     }
 
@@ -164,9 +164,9 @@ public class Terminal : MonoBehaviour {
         InputLine.Hide();
         DisplayTextLine("Starting trader program...");
         yield return new WaitForSeconds(2f);
+        RunTraderProgram();
         InputLine.Show();
         DisplayMargin();
-        RunTraderProgram();
     }
 
     private void RunTraderProgram() {
