@@ -637,8 +637,8 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 4188764256806534}
-  - component: {fileID: 114691812604211546}
-  - component: {fileID: 114825810551009668}
+  - component: {fileID: 114586921576869916}
+  - component: {fileID: 114017740113542408}
   m_Layer: 0
   m_Name: Stock Market
   m_TagString: Untagged
@@ -1753,6 +1753,20 @@ MonoBehaviour:
   m_PreferredHeight: -1
   m_FlexibleWidth: -1
   m_FlexibleHeight: 1
+--- !u!114 &114017740113542408
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1409541528089634}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 792ad3716f38a4145b6cc467467eeb38, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  TimeField: {fileID: 114689399782115672}
+  MarketDayDurationInSeconds: 90
+  InfiniteDay: 0
 --- !u!114 &114017876717794274
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -2432,7 +2446,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b1db5e6c4c2841541b3e3ae358dd7ce7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Market: {fileID: 114691812604211546}
+  Market: {fileID: 114586921576869916}
   Player: {fileID: 114659143655091844}
   AccountField: {fileID: 114425717813987474}
   BalanceField: {fileID: 114824883554347962}
@@ -2732,7 +2746,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 66a1ec6276daf8e41bfb1ced55deac80, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Market: {fileID: 114691812604211546}
+  Market: {fileID: 114586921576869916}
   SymbolContainer: {fileID: 114717880631157268}
   CompanyNameContainer: {fileID: 114786094730038102}
   IndustryContainer: {fileID: 114823154948899834}
@@ -3475,15 +3489,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f5c3204f4f3e96045b1c94a41524ade7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Market: {fileID: 114691812604211546}
+  Market: {fileID: 114586921576869916}
   Player: {fileID: 114659143655091844}
   MarketPanel: {fileID: 114771954006959182}
   ModalContainer: {fileID: 224585690313365426}
-  AlertModalPrefab: {fileID: 114188390220758498, guid: 1c36557484cb1b24f9e62d5687d109f7,
+  AlertModalPrefab: {fileID: 114179558810335074, guid: 1c36557484cb1b24f9e62d5687d109f7,
     type: 2}
   DayDisplayPrefab: {fileID: 114834508329678624, guid: 042d71b5b28b3ac4ca3f686b1ddb7a0f,
     type: 2}
-  MarketClosingMusic: {fileID: 8300000, guid: d0fbd5b5a166e8048aed92c6a90d169f, type: 3}
 --- !u!114 &114585721549147824
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -3506,6 +3519,27 @@ MonoBehaviour:
   m_ChildForceExpandHeight: 0
   m_ChildControlWidth: 1
   m_ChildControlHeight: 0
+--- !u!114 &114586921576869916
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1409541528089634}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 95feb57ae7d75694bb92f8959329c5fb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Player: {fileID: 114659143655091844}
+  RandomSeed: 0
+  StockCount: 10
+  ActivateFirstStock: 0
+  AutoInitialize: 0
+  OpenMarketOnStart: 0
+  MinStockProcessingDuration: 1
+  MaxStockProcessingDuration: 5
+  EnableTimeTracker: 1
+  TimeTracker: {fileID: 114017740113542408}
 --- !u!114 &114587113527355072
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -3751,7 +3785,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2a4bf9ba4eb75a84b96b9b331fa13800, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Market: {fileID: 114691812604211546}
+  Market: {fileID: 114586921576869916}
 --- !u!114 &114668161909031268
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -3845,27 +3879,6 @@ MonoBehaviour:
     m_VerticalOverflow: 0
     m_LineSpacing: 1
   m_Text: 09:30 AM
---- !u!114 &114691812604211546
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1409541528089634}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f987ae118427e0546b65cfbd8776a62e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Player: {fileID: 114659143655091844}
-  RandomSeed: 0
-  StockCount: 10
-  ActivateFirstStock: 0
-  AutoInitialize: 0
-  OpenMarketOnStart: 0
-  MinStockProcessingDuration: 1
-  MaxStockProcessingDuration: 5
-  EnableTimeTracker: 1
-  TimeTracker: {fileID: 114825810551009668}
 --- !u!114 &114694128346043550
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -4221,14 +4234,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e331fc7d8fa813c4c8fb47d8178664c2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Market: {fileID: 114691812604211546}
+  Market: {fileID: 114586921576869916}
   Player: {fileID: 114659143655091844}
   Table: {fileID: 114484816183877656}
   KeyBindingPanel: {fileID: 114280472697721524}
   ModalContainer: {fileID: 224585690313365426}
   BuyModalPrefab: {fileID: 114430853264308332, guid: 941ce16ec8bf11c47aebcb6105a9deab,
     type: 2}
-  AlertModalPrefab: {fileID: 114188390220758498, guid: 1c36557484cb1b24f9e62d5687d109f7,
+  AlertModalPrefab: {fileID: 114179558810335074, guid: 1c36557484cb1b24f9e62d5687d109f7,
     type: 2}
   SellSoundEffect: {fileID: 8300000, guid: a90209ecfd369b54b80ce6fd0e5af5e0, type: 3}
   CurrentContext: 0
@@ -4484,20 +4497,6 @@ MonoBehaviour:
     m_VerticalOverflow: 0
     m_LineSpacing: 1
   m_Text: '...'
---- !u!114 &114825810551009668
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1409541528089634}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b51dfd459dce75541a69dc9d1f22a223, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  TimeField: {fileID: 114689399782115672}
-  MarketDayDurationInSeconds: 10
-  InfiniteDay: 0
 --- !u!114 &114838937984791674
 MonoBehaviour:
   m_ObjectHideFlags: 1

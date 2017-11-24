@@ -57,7 +57,7 @@ GameObject:
   - component: {fileID: 224023791565411788}
   - component: {fileID: 222356849365002794}
   - component: {fileID: 114706357817864548}
-  - component: {fileID: 114188390220758498}
+  - component: {fileID: 114179558810335074}
   m_Layer: 5
   m_Name: AlertModal
   m_TagString: Modal
@@ -414,7 +414,7 @@ MonoBehaviour:
   m_FillAmount: 1
   m_FillClockwise: 1
   m_FillOrigin: 0
---- !u!114 &114188390220758498
+--- !u!114 &114179558810335074
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
@@ -422,7 +422,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 1114828587053816}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a97ee531f35284f48a2159c53888abef, type: 3}
+  m_Script: {fileID: 11500000, guid: 18acd12b05a63cd4ca0e4a187ab97866, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   Title: {fileID: 114933985918384638}
@@ -799,7 +799,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 2
-  m_Text: You'll lose this day progress. Continue?
+  m_Text: Message
 --- !u!114 &114763617804609140
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -970,7 +970,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0, g: 0, b: 0, a: 1}
+  m_Color: {r: 0, g: 0, b: 0, a: 0.87058824}
   m_RaycastTarget: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
@@ -990,7 +990,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: EXIT
+  m_Text: TITLE
 --- !u!114 &114979203501899762
 MonoBehaviour:
   m_ObjectHideFlags: 1

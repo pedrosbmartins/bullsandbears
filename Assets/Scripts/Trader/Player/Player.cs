@@ -26,12 +26,17 @@ public class Player : MonoBehaviour {
     public void Awake() {
         OwnedStocks = new Dictionary<string, int>();
         Account = new Account(GameData.GetBalance());
+        Market.OnStockProcessed += HandleStockProcessed;
+    }
+
+    public void SaveBalance() {
+        GameData.SetBalance(Account.Balance);
     }
 
     public void Buy(Stock stock, int quantity) {
         float amount = stock.CurrentPrice() * quantity;
         Account.Subtract(amount);
-        if (OwnedStocks.ContainsKey(stock.Symbol)) {
+        if (Owns(stock)) {
             OwnedStocks[stock.Symbol] = OwnedStocks[stock.Symbol] + quantity;
         }
         else {
@@ -42,7 +47,7 @@ public class Player : MonoBehaviour {
     }
 
     public void Sell(Stock stock) {
-        if (!OwnedStocks.ContainsKey(stock.Symbol)) {
+        if (!Owns(stock)) {
             return;
         }
         float amount = stock.CurrentPrice() * OwnedStocks[stock.Symbol];
@@ -71,8 +76,14 @@ public class Player : MonoBehaviour {
         OnAllPositionsClosed();
     }
 
-    public void SaveBalance() {
-        GameData.SetBalance(Account.Balance);
+    private bool Owns(Stock stock) {
+        return OwnedStocks.ContainsKey(stock.Symbol);
+    }
+
+    private void HandleStockProcessed(Stock stock) {
+        if (Owns(stock)) {
+            OnAccountChange();
+        }
     }
 
 }

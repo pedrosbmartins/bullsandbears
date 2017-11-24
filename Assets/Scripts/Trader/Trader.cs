@@ -11,7 +11,6 @@ public class Trader : MonoBehaviour {
     public RectTransform ModalContainer;
     public AlertModal AlertModalPrefab;
     public DayDisplay DayDisplayPrefab;
-    public AudioClip MarketClosingMusic;
 
     public delegate void ExitProgramHandler();
     public event ExitProgramHandler OnExitProgram = delegate { };
