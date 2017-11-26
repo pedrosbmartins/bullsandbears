@@ -1,15 +1,13 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
 public abstract class Modal : MonoBehaviour {
 
-    public delegate void ModalExitHandler();
-    public event ModalExitHandler OnExit = delegate {};
-
-    public delegate void SellModalSubmitHandler();
-    public event SellModalSubmitHandler OnSubmit = delegate {};
+    public event Action OnExit = delegate { };
+    public event Action OnSubmit = delegate { };
 
     public Text Title;
     public Text Message;

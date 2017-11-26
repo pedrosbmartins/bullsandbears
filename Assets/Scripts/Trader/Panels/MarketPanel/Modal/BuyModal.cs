@@ -6,8 +6,7 @@ using UnityEngine.UI;
 
 public class BuyModal : Modal {
 
-    public delegate void BuyModalSubmitHandler(int quantity);
-    public event BuyModalSubmitHandler OnQuantitySubmit = delegate {};
+    public event Action<int> OnQuantitySubmit = delegate { };
 
     public Slider QuantitySlider;
     public Text QuantityField;

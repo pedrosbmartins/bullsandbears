@@ -10,8 +10,7 @@ public class DayDisplay : MonoBehaviour {
 
     public Text Label;
 
-    public delegate void HideHandler();
-    public event HideHandler OnHide = delegate {};
+    public event Action OnHide = delegate { };
 
     private void Start() {
         StartCoroutine(Display());

@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 public class StockPanel : MonoBehaviour {
 
-    public StockMarket Market;
+    private StockMarket market;
 
     private const string EMPTY_VALUE = "...";
 
@@ -21,8 +21,9 @@ public class StockPanel : MonoBehaviour {
     public StockChart Chart;
 
     private void Awake() {
-        Market.OnActiveStockProcessed += HandleActiveStockChanged;
-        Market.OnActiveStockCleared += HandleActiveStockCleared;
+        market = GetComponentInParent<StockMarket>();
+        market.OnActiveStockProcessed += HandleActiveStockChanged;
+        market.OnActiveStockCleared += HandleActiveStockCleared;
     }
 
     private void HandleActiveStockChanged(Stock stock) {

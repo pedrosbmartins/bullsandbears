@@ -4,19 +4,21 @@ using UnityEngine;
 
 public class PriceGraphRenderer : StockChartLineRenderer {
 
-    public override void Draw(Stock stock, int? ceilingMargin, int? pointsCount) {
+    public override void Draw(Stock stock, int? ceilingMargin, int? positionsCount) {
+        lineRenderer.numPositions = (int)positionsCount;
+
         List<float> recentPriceHistory;
 
-        if (stock.PriceHistory.Count <= pointsCount) {
+        if (stock.PriceHistory.Count <= positionsCount) {
             recentPriceHistory = stock.PriceHistory;
         }
         else {
-            int rangeStartIndex = stock.PriceHistory.Count - (int)pointsCount;
-            recentPriceHistory = stock.PriceHistory.GetRange(rangeStartIndex, (int)pointsCount);
+            int rangeStartIndex = stock.PriceHistory.Count - (int)positionsCount;
+            recentPriceHistory = stock.PriceHistory.GetRange(rangeStartIndex, (int)positionsCount);
         }
 
-        var positions = new Vector3[(int)pointsCount];
-        float incrementX = width / ((int)pointsCount - 1);
+        var positions = new Vector3[(int)positionsCount];
+        float incrementX = width / ((int)positionsCount - 1);
 
         for (int i = 0; i < recentPriceHistory.Count; i++) {
             float x = incrementX * i;
@@ -24,8 +26,8 @@ public class PriceGraphRenderer : StockChartLineRenderer {
             positions[i] = new Vector3(x, y);
         }
 
-        if (recentPriceHistory.Count < pointsCount) {
-            for (int i = recentPriceHistory.Count; i < pointsCount; i++) {
+        if (recentPriceHistory.Count < positionsCount) {
+            for (int i = recentPriceHistory.Count; i < positionsCount; i++) {
                 positions[i] = positions[recentPriceHistory.Count - 1];
             }
         }

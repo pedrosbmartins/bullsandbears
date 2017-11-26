@@ -18,7 +18,7 @@ public class MessageCentral {
     private MessagePanel panel;
 
     public MessageCentral() {
-        var messagePanel = GameObject.Find("MessagePanel");
+        var messagePanel = GameObject.FindWithTag("MessagePanel");
         if (messagePanel != null) {
             panel = messagePanel.GetComponent<MessagePanel>();
         }
@@ -31,11 +31,25 @@ public class MessageCentral {
         if (panel != null) {
             panel.DisplayMessage(type, message);
         }
+        else {
+            Log(type, new string[] { message });
+        }
     }
 
     public void DisplayMessages(string type, string[] messages, bool separator = false, bool delayFirst = false) {
         if (panel != null) {
             panel.StartMessageQueue(type, messages, separator, delayFirst);
+        }
+        else {
+            Log(type, messages);
+        }
+    }
+
+    private void Log(string type, string[] messages) {
+        for (int i = 0; i < messages.Length; i++) {
+            Debug.Log(
+                string.Format("{0}: {1}", type, messages[i])
+            );
         }
     }
 

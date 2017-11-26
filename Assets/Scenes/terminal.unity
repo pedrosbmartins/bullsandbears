@@ -118,6 +118,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2a4bf9ba4eb75a84b96b9b331fa13800, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  Market: {fileID: 0}
 --- !u!4 &37703583
 Transform:
   m_ObjectHideFlags: 0
@@ -328,22 +329,22 @@ Prefab:
     - target: {fileID: 224659549143434400, guid: 80e81974dc6af0b4ab5cb9c80fd748f4,
         type: 2}
       propertyPath: m_AnchoredPosition.x
-      value: 391.8869
+      value: 391.82153
       objectReference: {fileID: 0}
     - target: {fileID: 224659549143434400, guid: 80e81974dc6af0b4ab5cb9c80fd748f4,
         type: 2}
       propertyPath: m_AnchoredPosition.y
-      value: -5
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 224659549143434400, guid: 80e81974dc6af0b4ab5cb9c80fd748f4,
         type: 2}
       propertyPath: m_SizeDelta.x
-      value: 773.7738
+      value: 773.64307
       objectReference: {fileID: 0}
     - target: {fileID: 224304012980564138, guid: 80e81974dc6af0b4ab5cb9c80fd748f4,
         type: 2}
       propertyPath: m_SizeDelta.y
-      value: 33
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 80e81974dc6af0b4ab5cb9c80fd748f4, type: 2}

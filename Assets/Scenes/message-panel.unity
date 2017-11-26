@@ -279,88 +279,55 @@ Prefab:
         type: 2}
       propertyPath: Market
       value: 
-      objectReference: {fileID: 274845118}
+      objectReference: {fileID: 0}
     - target: {fileID: 224856407666547454, guid: 80c918559776b364698475209414f1d1,
         type: 2}
       propertyPath: m_SizeDelta.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 224646399383003166, guid: 80c918559776b364698475209414f1d1,
+        type: 2}
+      propertyPath: m_SizeDelta.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 224849361544362576, guid: 80c918559776b364698475209414f1d1,
+        type: 2}
+      propertyPath: m_AnchorMin.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 224849361544362576, guid: 80c918559776b364698475209414f1d1,
+        type: 2}
+      propertyPath: m_AnchorMax.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 224849361544362576, guid: 80c918559776b364698475209414f1d1,
+        type: 2}
+      propertyPath: m_AnchoredPosition.x
+      value: 399.82153
+      objectReference: {fileID: 0}
+    - target: {fileID: 224849361544362576, guid: 80c918559776b364698475209414f1d1,
+        type: 2}
+      propertyPath: m_SizeDelta.x
+      value: 799.64307
+      objectReference: {fileID: 0}
+    - target: {fileID: 224849361544362576, guid: 80c918559776b364698475209414f1d1,
+        type: 2}
+      propertyPath: m_AnchoredPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 224849361544362576, guid: 80c918559776b364698475209414f1d1,
+        type: 2}
+      propertyPath: m_SizeDelta.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 224506480775045030, guid: 80c918559776b364698475209414f1d1,
+        type: 2}
+      propertyPath: m_AnchoredPosition.y
+      value: -0.41033936
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 80c918559776b364698475209414f1d1, type: 2}
   m_IsPrefabParent: 0
---- !u!224 &274835282 stripped
-RectTransform:
-  m_PrefabParentObject: {fileID: 224587613819801282, guid: 80c918559776b364698475209414f1d1,
-    type: 2}
-  m_PrefabInternal: {fileID: 274835281}
---- !u!1 &274845117
-GameObject:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  serializedVersion: 5
-  m_Component:
-  - component: {fileID: 274845119}
-  - component: {fileID: 274845118}
-  - component: {fileID: 274845120}
-  m_Layer: 5
-  m_Name: Stock Market
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &274845118
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 274845117}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f987ae118427e0546b65cfbd8776a62e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  RandomSeed: 0
-  StockCount: 0
-  ActivateFirstStock: 0
-  OpenMarketOnStart: 1
-  MinStockProcessingDuration: 1
-  MaxStockProcessingDuration: 5
-  EnableTimeTracker: 1
-  TimeTracker: {fileID: 274845120}
---- !u!224 &274845119
-RectTransform:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 274845117}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_RootOrder: 3
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 100, y: 100}
-  m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &274845120
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 274845117}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b51dfd459dce75541a69dc9d1f22a223, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  TimeField: {fileID: 941586990}
-  MarketDayDurationInSeconds: 90
-  InfiniteDay: 1
 --- !u!1 &774120515
 GameObject:
   m_ObjectHideFlags: 0
@@ -371,9 +338,11 @@ GameObject:
   - component: {fileID: 774120516}
   - component: {fileID: 774120518}
   - component: {fileID: 774120517}
+  - component: {fileID: 774120521}
+  - component: {fileID: 774120520}
   - component: {fileID: 774120519}
   m_Layer: 5
-  m_Name: Screen
+  m_Name: Parent
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -389,7 +358,7 @@ RectTransform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
-  - {fileID: 274835282}
+  - {fileID: 1284283381}
   m_Father: {fileID: 2078700388}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -439,10 +408,52 @@ MonoBehaviour:
   m_GameObject: {fileID: 774120515}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: -1200242548, guid: f70555f144d8491a825f0804e09c671c, type: 3}
+  m_Script: {fileID: 11500000, guid: 2a4bf9ba4eb75a84b96b9b331fa13800, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_ShowMaskGraphic: 1
+  Market: {fileID: 774120520}
+--- !u!114 &774120520
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 774120515}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 95feb57ae7d75694bb92f8959329c5fb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  RandomSeed: 0
+  StockCount: 0
+  ActivateFirstStock: 0
+  AutoInitialize: 1
+  OpenMarketOnStart: 0
+  MinStockProcessingDuration: 1
+  MaxStockProcessingDuration: 3
+  PriceEffectDuration: 30
+  TimeTracker: {fileID: 0}
+--- !u!114 &774120521
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 774120515}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 1297475563, guid: f70555f144d8491a825f0804e09c671c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Padding:
+    m_Left: 0
+    m_Right: 0
+    m_Top: 0
+    m_Bottom: 0
+  m_ChildAlignment: 0
+  m_Spacing: 0
+  m_ChildForceExpandWidth: 1
+  m_ChildForceExpandHeight: 1
+  m_ChildControlWidth: 1
+  m_ChildControlHeight: 1
 --- !u!1 &941586989
 GameObject:
   m_ObjectHideFlags: 0
@@ -579,6 +590,11 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!224 &1284283381 stripped
+RectTransform:
+  m_PrefabParentObject: {fileID: 224849361544362576, guid: 80c918559776b364698475209414f1d1,
+    type: 2}
+  m_PrefabInternal: {fileID: 274835281}
 --- !u!1 &2078700384
 GameObject:
   m_ObjectHideFlags: 0

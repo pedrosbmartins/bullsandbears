@@ -13,49 +13,45 @@ public enum MarketState { Idle, DayStarted, DayEnded, Closed };
 
 public class StockMarket : MonoBehaviour, IRandomGenerator {
 
-    public Player Player;
+    [SerializeField] private int RandomSeed;
 
-    public int RandomSeed;
+    [SerializeField] private int StockCount;
+    [SerializeField] private bool ActivateFirstStock;
 
-    public int StockCount;
-    public bool ActivateFirstStock;
+    [SerializeField] private bool AutoInitialize;
+    [SerializeField] private bool OpenMarketOnStart;
 
-    public bool AutoInitialize;
-    public bool OpenMarketOnStart;
+    [SerializeField] private float MinStockProcessingDuration = 1f;
+    [SerializeField] private float MaxStockProcessingDuration = 3f;
 
-    public float MinStockProcessingDuration = 1f;
-    public float MaxStockProcessingDuration = 5f;
+    [SerializeField] private float PriceEffectDuration = 15f;
 
-    public bool EnableTimeTracker = true;
-    public TimeTracker TimeTracker;
+    public event Action OnDayStarted = delegate { };
+    public event Action OnDayEnded = delegate { };
 
-    public delegate void DayStartedHandler();
-    public event DayStartedHandler OnDayStarted = delegate {};
+    public event Action<Stock> OnStockAdded = delegate { };
+    public event Action<Stock> OnStockProcessed = delegate { };
 
-    public delegate void DayEndedHandler();
-    public event DayEndedHandler OnDayEnded = delegate {};
+    public event Action<Stock> OnActiveStockProcessed = delegate { };
+    public event Action OnActiveStockCleared = delegate { };
 
-    public delegate void StockAddedHandler(Stock stock);
-    public event StockAddedHandler OnStockAdded = delegate {};
-
-    public delegate void StockProcessedHandler(Stock stock);
-    public event StockProcessedHandler OnStockProcessed = delegate {};
-
-    public delegate void ActiveStockProcessedHandler(Stock stock);
-    public event ActiveStockProcessedHandler OnActiveStockProcessed = delegate {};
-
-    public delegate void ActiveStockClearedHandler();
-    public event ActiveStockClearedHandler OnActiveStockCleared = delegate {};
-
+    public List<Stock> StockList { get; private set; }
     public Stock ActiveStock { get; private set; }
     public MarketState CurrentState { get; private set; }
 
+    private Player player;
+    [NonSerialized] public TimeTracker TimeTracker;
+
     private System.Random randomGenerator;
 
-    private List<Stock> stockList = new List<Stock>();
     private List<Company> companyList;
 
     private void Awake() {
+        StockList = new List<Stock>();
+
+        player = GetComponent<Player>();
+        TimeTracker = GetComponent<TimeTracker>();
+
         InitializeRandomGenerator();
         InitializeRandomCompanyList();
         SetEventsHandlers();
@@ -81,18 +77,18 @@ public class StockMarket : MonoBehaviour, IRandomGenerator {
 
     public Stock AddStock(string symbol, string companyName, Industry industry) {
         Stock stock = new Stock(symbol, companyName, industry, this);
-        stockList.Add(stock);
+        StockList.Add(stock);
         stock.OnProcessed += HandleStockProcessed;
         OnStockAdded(stock);
         return stock;
     }
 
     public Stock GetStock(string symbol) {
-        return stockList.Find(stock => stock.Symbol == symbol);
+        return StockList.Find(stock => stock.Symbol == symbol);
     }
 
     public void SetActiveStock(string symbol) {
-        ActiveStock = stockList.Find(stock => stock.Symbol == symbol);
+        ActiveStock = StockList.Find(stock => stock.Symbol == symbol);
         if (ActiveStock != null) {
             OnActiveStockProcessed(ActiveStock);
         }
@@ -105,6 +101,22 @@ public class StockMarket : MonoBehaviour, IRandomGenerator {
 
     public DateTime GetCurrentTime() {
         return TimeTracker.GetCurrentTime();
+    }
+
+    public void SetNewPriceEffect(PriceEffect effect) {
+        StopCoroutine("PriceEffectTimeout");
+        StockList.ForEach(stock => {
+            if (stock.CompanyIndustry == effect.AffectedIndustry) {
+                stock.SetExternalEffect(effect);
+            }
+        });
+        StartCoroutine("PriceEffectTimeout");
+    }
+
+    private IEnumerator PriceEffectTimeout() {
+        yield return new WaitForSeconds(PriceEffectDuration);
+        Debug.Log("No price effect");
+        StockList.ForEach(stock => stock.ClearExternalEffect());
     }
 
     private void SetState(MarketState state) {
@@ -120,10 +132,10 @@ public class StockMarket : MonoBehaviour, IRandomGenerator {
     }
 
     private void SetEventsHandlers() {
-        if (EnableTimeTracker) {
+        if (TimeTracker != null) {
             TimeTracker.OnMarkedDayEnded += HandleMarketDayEnded;
         }
-        Player.OnAllPositionsClosed += HandleAllPositionsClosed;
+        player.OnAllPositionsClosed += HandleAllPositionsClosed;
     }
 
     private void InitializeRandomStocks() {
@@ -131,28 +143,28 @@ public class StockMarket : MonoBehaviour, IRandomGenerator {
             AddRandomStock();
         }
         if (ActivateFirstStock) {
-            SetActiveStock(stockList[0].Symbol);
+            SetActiveStock(StockList[0].Symbol);
         }
     }
 
     private void AddRandomStock() {
-        var company = companyList[stockList.Count];
+        var company = companyList[StockList.Count];
         AddStock(company.TickerSymbol, company.Name, company.Industry);
     }
 
     public void BeginDay() {
         SetState(MarketState.DayStarted);
-        if (EnableTimeTracker) {
+        if (TimeTracker != null) {
             TimeTracker.StartTracking();
         }
-        stockList.ForEach(stock => StartCoroutine(ProcessStock(stock)));
+        StockList.ForEach(stock => StartCoroutine(ProcessStock(stock)));
         DisplayMarketDayStartedMessages();
         OnDayStarted();
     }
 
     private void EndDay() {
         SetState(MarketState.DayEnded);
-        StopAllCoroutines(); // stops all "ProcessStock" coroutines
+        StopAllCoroutines(); // stops all "ProcessStock" and Price Effect coroutines
         DisplayMarketDayEndedMessages();
         OnDayEnded();
     }
@@ -210,22 +222,6 @@ public class StockMarket : MonoBehaviour, IRandomGenerator {
 
     private void HandleAllPositionsClosed() {
         SetState(MarketState.Closed);
-    }
-
-}
-
-public enum Industry { Technology, OilAndGas, BanksAndFinance };
-
-public class Company {
-
-    public string TickerSymbol;
-    public string Name;
-    public Industry Industry;
-
-    public Company(string symbol, string name, Industry industry) {
-        TickerSymbol = symbol;
-        Name = name;
-        Industry = industry;
     }
 
 }

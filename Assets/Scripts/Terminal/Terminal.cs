@@ -15,7 +15,7 @@ public class Terminal : MonoBehaviour {
     public TextLine TextLinePrefab;
     public Trader TraderPrefab;
 
-    public Trader Trader;
+    private Trader trader;
     public InputLine InputLine;
     public Monitor Monitor;
 
@@ -171,21 +171,21 @@ public class Terminal : MonoBehaviour {
 
     private void RunTraderProgram() {
         gameObject.SetActive(false);
-        Trader = Instantiate(TraderPrefab, Screen, false);
-        Trader.OnExitProgram += HandleTraderExit;
-        Trader.OnRebootProgram += HandleTraderReboot;
+        trader = Instantiate(TraderPrefab, Screen, false);
+        trader.OnExitProgram += HandleTraderExit;
+        trader.OnRebootProgram += HandleTraderReboot;
     }
 
     private void HandleTraderExit() {
-        Trader.OnExitProgram -= HandleTraderExit;
-        Destroy(Trader.gameObject);
+        trader.OnExitProgram -= HandleTraderExit;
+        Destroy(trader.gameObject);
         gameObject.SetActive(true);
         InputLine.Focus();
     }
 
     private void HandleTraderReboot() {
-        Trader.OnRebootProgram -= HandleTraderReboot;
-        Destroy(Trader.gameObject);
+        trader.OnRebootProgram -= HandleTraderReboot;
+        Destroy(trader.gameObject);
         RunTraderProgram();
     }
 

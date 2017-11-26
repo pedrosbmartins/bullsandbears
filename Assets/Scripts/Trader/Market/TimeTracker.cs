@@ -14,8 +14,7 @@ public class TimeTracker : MonoBehaviour {
     public DateTime MarketOpenTime = DateTime.Today.AddHours(9.5);
     public DateTime MarketCloseTime = DateTime.Today.AddHours(17);
 
-    public delegate void MarketDayEndedHandler();
-    public event MarketDayEndedHandler OnMarkedDayEnded = delegate {};
+    public event Action OnMarkedDayEnded = delegate { };
 
     private DateTime currentTime;
 

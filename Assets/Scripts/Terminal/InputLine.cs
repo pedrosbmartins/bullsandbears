@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -6,9 +7,7 @@ using UnityEngine.UI;
 public class InputLine : MonoBehaviour {
 
     public InputField Field;
-
-    public delegate void OnSubmitHandler(string command);
-    public event OnSubmitHandler OnSubmit = delegate {};
+    public event Action<string> OnSubmit = delegate { };
 
 	public void Focus() {
         Field.ActivateInputField();

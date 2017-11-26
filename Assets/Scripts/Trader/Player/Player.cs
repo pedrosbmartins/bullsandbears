@@ -1,20 +1,14 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class Player : MonoBehaviour {
 
-    public delegate void BuyStockHandler(Stock stock);
-    public event BuyStockHandler OnBuyStock = delegate {};
-
-    public delegate void SellStockHandler(Stock stock);
-    public event SellStockHandler OnSellStock = delegate { };
-
-    public delegate void AccountChangeHandler();
-    public event AccountChangeHandler OnAccountChange = delegate { };
-
-    public delegate void AllPositionsClosedHandler();
-    public event AllPositionsClosedHandler OnAllPositionsClosed = delegate { };
+    public event Action<Stock> OnBuyStock = delegate { };
+    public event Action<Stock> OnSellStock = delegate { };
+    public event Action OnAccountChange = delegate { };
+    public event Action OnAllPositionsClosed = delegate { };
 
     public StockMarket Market;
 

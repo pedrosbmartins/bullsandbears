@@ -1,15 +1,13 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class StockTable : MonoBehaviour {
 
-    public delegate void RowSelectedHandler(StockTableRow row);
-    public event RowSelectedHandler OnRowSelected = delegate {};
-
-    public delegate void RowSelectionClearedHandler();
-    public event RowSelectionClearedHandler OnRowSelectionCleared = delegate {};
+    public event Action<StockTableRow> OnRowSelected = delegate { };
+    public event Action OnRowSelectionCleared = delegate { };
 
     public StockTableRow StockTableRowPrefab;
 

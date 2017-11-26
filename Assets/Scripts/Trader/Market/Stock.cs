@@ -6,18 +6,20 @@ using System.Linq;
 
 public class Stock {
 
-    public delegate void StockProcessedHandler(Stock stock);
-    public event StockProcessedHandler OnProcessed = delegate {};
+    public event Action<Stock> OnProcessed = delegate { };
 
-    private const float CEILING_MAX_INITIAL_VALUE = 150f;
-    private const float VOLUME_MAX_INITIAL_VALUE = 100f;
+    private const float CEILING_MAX_VALUE = 150f;
+    private const float VOLUME_MAX_VALUE = 100f;
 
-    private const float ABOVE_CEILING_MARGIN = 10f;
+    private const float ABOVE_CEILING_MARGIN = 10f; // maximum possible price is always Ceiling + this margin
     private const float CEILING_PROXIMITY_THRESHOLD = 5f;
     private const float MINIMUM_PRICE = 1f;
 
+    // the 'target approach delay' is the number of process cycles it 
+    // should take for the price to approach the target value
     private const int TARGET_APPROACH_DELAY_MIN = 8;
     private const int TARGET_APPROACH_DELAY_MAX = 15;
+    private int currentTargetApproachDelay = TARGET_APPROACH_DELAY_MIN;
 
     private const float TARGET_APPROACH_MARGIN = 1f;
     private const float TARGET_APPROACH_FLUCTUATION = 0.1f;
@@ -35,10 +37,11 @@ public class Stock {
     private float PriceTarget;
     private float PreMovementPrice; // remembers the price before a movement towards the target begins
 
-    private float? lastPriceToTargetDistance = null; // keeps tracks of the last |Price - Target| value, basically to see if it is increasing (it shouldn't!)
-    private int currentTargetApproachDelay = TARGET_APPROACH_DELAY_MIN; // basically how many "process" cycles it should take for the price to approach the target value
+    private float? lastPriceToTargetDistance = null; // keeps tracks of the last |Price - Target| value, to see if it is increasing (it never should increase!)
 
     private IRandomGenerator randomGenerator;
+
+    private PriceEffect currentExternalEffect;
 
     public Stock(string symbol, string companyName, Industry industry, IRandomGenerator randomGenerator) {
         UnitySystemConsoleRedirector.Redirect(); // redirects System.Console output to Unity's console
@@ -57,15 +60,15 @@ public class Stock {
         VolumeHistory = new List<float>();
         TrendHistory = new List<float>();
         SetCeiling();
-        GenerateInitialPrice();
+        SetInitialPrice();
         SetNewTrendEffectAndPriceTarget();
     }
 
     private void SetCeiling() {
-        Ceiling = randomGenerator.NextRandomFloat(CEILING_MAX_INITIAL_VALUE / 2f, CEILING_MAX_INITIAL_VALUE);
+        Ceiling = randomGenerator.NextRandomFloat(CEILING_MAX_VALUE / 2f, CEILING_MAX_VALUE);
     }
 
-    private void GenerateInitialPrice() {
+    private void SetInitialPrice() {
         PriceHistory.Add(Ceiling - randomGenerator.NextRandomFloat(0f, Ceiling));
     }
 
@@ -96,35 +99,85 @@ public class Stock {
     }
 
     private void GenerateNewVolume() {
-        VolumeHistory.Add(randomGenerator.NextRandomFloat(0f, VOLUME_MAX_INITIAL_VALUE));
+        float newVolume = currentExternalEffect == null 
+                        ? RandomVolume() 
+                        : CalculateVolumeWithEffect();
+        VolumeHistory.Add(newVolume);
+    }
+
+    private float RandomVolume() {
+        return randomGenerator.NextRandomFloat(0f, VOLUME_MAX_VALUE);
+    }
+
+    private float CalculateVolumeWithEffect() {
+        float maxVolume = VOLUME_MAX_VALUE;
+        float halfMaxVolume = VOLUME_MAX_VALUE / 2;
+        float thirdMaxVolume = VOLUME_MAX_VALUE / 3;
+
+        float volume;
+
+        if (currentExternalEffect.Strength == EffectStrength.Strong) {
+            volume = randomGenerator.NextRandomFloat(halfMaxVolume, maxVolume);
+        }
+        else {
+            volume = randomGenerator.NextRandomFloat(thirdMaxVolume, halfMaxVolume);
+        }
+
+        return volume;
     }
 
     private void GenerateNewTrend() {
-        float newTrend;
-        float ceilingDistance = Ceiling - CurrentPrice();
+        float newTrend = currentExternalEffect == null 
+                       ? CalculateTrend() 
+                       : CalculateTrendWithEffect();
+        TrendHistory.Add(newTrend);
+    }
+
+    private float CalculateTrend() {
+        float trend;
 
         if (TrendHistory.Count == 0) {
-            TrendHistory.Add(randomGenerator.NextRandomFloat(-1f, 1f));
-            return;
+            return randomGenerator.NextRandomFloat(-1f, 1f);
         }
 
-        if (ceilingDistance <= CEILING_PROXIMITY_THRESHOLD) {
-            newTrend = randomGenerator.NextRandomFloat(-1f, -0.75f); // price is too close to ceiling, force it down
+        if (PriceTooCloseToCeiling()) {
+            trend = randomGenerator.NextRandomFloat(-1f, -0.75f); // force price down
             currentTargetApproachDelay = TARGET_APPROACH_DELAY_MAX;
         }
         else {
-            float currentAbsoluteTrend = Math.Abs(CurrentTrend());
-            if (currentAbsoluteTrend >= 0.75f || currentAbsoluteTrend <= 0.25f) {
-                // trend is too strong or too weak, so new effect is random
-                newTrend = randomGenerator.NextRandomFloat(-1f, 1f);
+            if (CurrentTrendTooStrongOrTooWeak()) {
+                trend = randomGenerator.NextRandomFloat(-1f, 1f); // new trend is random
             }
             else {
-                // trend is in mid-range (between 0.25 and 0.75), so new effect is similar
-                newTrend = CurrentTrend() + randomGenerator.NextRandomFloat(0f, 0.2f);
+                trend = CurrentTrend() + randomGenerator.NextRandomFloat(0f, 0.2f); // new trend is similar to current
             }
         }
 
-        TrendHistory.Add(newTrend);
+        return trend;
+    }
+
+    private float CalculateTrendWithEffect() {
+        var signal = currentExternalEffect.Direction == EffectDirection.Positive ? 1 : -1;
+        float trend;
+
+        if (currentExternalEffect.Strength == EffectStrength.Strong) {
+            trend = signal * randomGenerator.NextRandomFloat(0.75f, 1f);
+        }
+        else {
+            trend = signal * randomGenerator.NextRandomFloat(0.25f, 0.75f);
+        }
+
+        return trend;
+    }
+
+    private bool PriceTooCloseToCeiling() {
+        float ceilingDistance = Ceiling - CurrentPrice();
+        return ceilingDistance <= CEILING_PROXIMITY_THRESHOLD;
+    }
+
+    private bool CurrentTrendTooStrongOrTooWeak() {
+        float currentAbsoluteTrend = Math.Abs(CurrentTrend());
+        return currentAbsoluteTrend >= 0.75f || currentAbsoluteTrend <= 0.25f;
     }
 
     public void Process() {
@@ -140,6 +193,16 @@ public class Stock {
         }
 
         OnProcessed(this);
+    }
+
+    public void SetExternalEffect(PriceEffect effect) {
+        currentExternalEffect = effect;
+        SetNewTrendEffectAndPriceTarget();
+    }
+
+    public void ClearExternalEffect() {
+        currentExternalEffect = null;
+        SetNewTrendEffectAndPriceTarget();
     }
 
     private float CalculatePriceTargetApproach() {
