@@ -7,10 +7,11 @@ public class Player : MonoBehaviour {
 
     public event Action<Stock> OnBuyStock = delegate { };
     public event Action<Stock> OnSellStock = delegate { };
+    public event Action<Stock> OnBorrowStock = delegate { };
     public event Action OnAccountChange = delegate { };
     public event Action OnAllPositionsClosed = delegate { };
 
-    public StockMarket Market;
+    private StockMarket market;
 
     public Account Account { get; private set; }
 
@@ -18,13 +19,23 @@ public class Player : MonoBehaviour {
     public float StocksValue { get; private set; }
 
     public void Awake() {
+        market = GetComponent<StockMarket>();
         OwnedStocks = new Dictionary<string, int>();
         Account = new Account(GameData.GetBalance());
-        Market.OnStockProcessed += HandleStockProcessed;
+        market.OnStockProcessed += HandleStockProcessed;
     }
 
     public void SaveBalance() {
         GameData.SetBalance(Account.Balance);
+    }
+
+    public bool Owns(Stock stock) {
+        return OwnedStocks.ContainsKey(stock.Symbol);
+    }
+
+    public bool Borrowed(Stock stock) {
+        return OwnedStocks.ContainsKey(stock.Symbol)
+            && OwnedStocks[stock.Symbol] < 0;
     }
 
     public void Buy(Stock stock, int quantity) {
@@ -40,15 +51,41 @@ public class Player : MonoBehaviour {
         OnBuyStock(stock);
     }
 
-    public void Sell(Stock stock) {
+    public void BuyAllShorted(Stock stock) {
+        int quantity = -1 * OwnedStocks[stock.Symbol];
+        float amount = stock.CurrentPrice() * quantity;
+        Account.Subtract(amount);
+        OwnedStocks.Remove(stock.Symbol);
+        OnAccountChange();
+        OnBuyStock(stock);
+    }
+
+    public void Sell(Stock stock, int quantity) {
         if (!Owns(stock)) {
             return;
         }
-        float amount = stock.CurrentPrice() * OwnedStocks[stock.Symbol];
+        float amount = stock.CurrentPrice() * quantity;
         Account.Add(amount);
-        OwnedStocks.Remove(stock.Symbol);
+        OwnedStocks[stock.Symbol] -= quantity;
+        if (OwnedStocks[stock.Symbol] == 0) {
+            OwnedStocks.Remove(stock.Symbol);
+        }
         OnAccountChange();
         OnSellStock(stock);
+    }
+
+    public void SellAll(Stock stock) {
+        if (!Owns(stock)) {
+            return;
+        }
+        Sell(stock, OwnedStocks[stock.Symbol]);
+    }
+
+    public void Short(Stock stock, int quantity) {
+        OwnedStocks.Add(stock.Symbol, 0);
+        Sell(stock, quantity);
+        OnAccountChange();
+        OnBorrowStock(stock);
     }
 
     public bool Affords(Stock stock, int quantity) {
@@ -63,15 +100,18 @@ public class Player : MonoBehaviour {
         List<string> ownedStocksSymbols = new List<string>(OwnedStocks.Keys);
         foreach (var symbol in ownedStocksSymbols) {
             yield return new WaitForSeconds(1.5f);
-            MessageCentral.Instance.DisplayMessage("Message", "Selling remaining " + symbol);
-            Sell(Market.GetStock(symbol));
+            int quantity = OwnedStocks[symbol];
+            if (quantity > 0) {
+                MessageCentral.Instance.DisplayMessage("Message", "Selling remaining " + symbol);
+                SellAll(market.GetStock(symbol));
+            }
+            else {
+                MessageCentral.Instance.DisplayMessage("Message", "Buying remaining shorted " + symbol);
+                BuyAllShorted(market.GetStock(symbol));
+            }
         }
         yield return new WaitForSeconds(1.5f);
         OnAllPositionsClosed();
-    }
-
-    private bool Owns(Stock stock) {
-        return OwnedStocks.ContainsKey(stock.Symbol);
     }
 
     private void HandleStockProcessed(Stock stock) {

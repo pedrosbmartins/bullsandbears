@@ -4,9 +4,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class BuyModal : Modal {
+public class QuantityModal : Modal {
 
-    public event Action<int> OnQuantitySubmit = delegate { };
+    public new event Action<int> OnSubmit = delegate { };
 
     public Slider QuantitySlider;
     public Text QuantityField;
@@ -30,7 +30,7 @@ public class BuyModal : Modal {
     }
 
     protected override void OnOkButtonClicked() {
-        OnQuantitySubmit(int.Parse(QuantityField.text));
+        OnSubmit(int.Parse(QuantityField.text));
     }
 
     private void OnQuantityChange(float value) {

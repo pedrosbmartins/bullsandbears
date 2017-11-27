@@ -181,6 +181,7 @@ public class Terminal : MonoBehaviour {
         Destroy(trader.gameObject);
         gameObject.SetActive(true);
         InputLine.Focus();
+        ScrollPanelToBottom();
     }
 
     private void HandleTraderReboot() {

@@ -115,7 +115,6 @@ public class StockMarket : MonoBehaviour, IRandomGenerator {
 
     private IEnumerator PriceEffectTimeout() {
         yield return new WaitForSeconds(PriceEffectDuration);
-        Debug.Log("No price effect");
         StockList.ForEach(stock => stock.ClearExternalEffect());
     }
 
@@ -174,7 +173,7 @@ public class StockMarket : MonoBehaviour, IRandomGenerator {
             "The market is open",
             "It closes at 05:00PM",
             "Your current balance target is:",
-            "$100,000.00",
+            GameAchievements.Current().BalanceTarget.ToString("C2"),
         };
         MessageCentral.Instance.DisplayMessages("Message", messages, true);
     }

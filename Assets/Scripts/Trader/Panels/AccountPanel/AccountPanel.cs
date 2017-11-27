@@ -48,13 +48,13 @@ public class AccountPanel : MonoBehaviour {
     }
 
     private float CalculateAssetsValue() {
-        float value = 0;
+        float assetsValue = 0;
         foreach (var asset in player.OwnedStocks) {
             var stockSymbol = asset.Key;
-            var quantity = asset.Value;
-            value += market.GetStock(stockSymbol).CurrentPrice() * quantity;
+            var quantity = Math.Abs(asset.Value); // shorted quantities are negative
+            assetsValue += market.GetStock(stockSymbol).CurrentPrice() * quantity;
         }
-        return value;
+        return assetsValue;
     }
 
 }

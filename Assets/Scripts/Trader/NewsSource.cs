@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using UnityEngine;
 
 public class NewsSource : MonoBehaviour {
@@ -11,26 +12,32 @@ public class NewsSource : MonoBehaviour {
 
     private void Awake() {
         market = GetComponent<StockMarket>();
-        market.OnDayStarted += Initialize;
+        if (GameAchievements.IsMechanicUnlocked(Mechanic.News)) {
+            market.OnDayStarted += Initialize;
+        }
     }
 
     public void Initialize() {
         StartCoroutine(GenerateNews());
     }
 
+    public void Stop() {
+        StopAllCoroutines();
+    }
+
     private IEnumerator GenerateNews() {
         yield return new WaitForSeconds(FIRST_NEWS_GAP);
         while (true) {
             CreateRandomNewsStory();
-            yield return new WaitForSeconds(Random.Range(NEWS_GAP_MIN, NEWS_GAP_MAX));
+            yield return new WaitForSeconds(UnityEngine.Random.Range(NEWS_GAP_MIN, NEWS_GAP_MAX));
         }
     }
 
     private void CreateRandomNewsStory() {
-        var randomIndex = Mathf.FloorToInt((market.StockList.Count - 1) * Random.value);
+        var randomIndex = Mathf.FloorToInt((market.StockList.Count - 1) * UnityEngine.Random.value);
         var industry = market.StockList[randomIndex].CompanyIndustry;
-        var direction = RandomPercentage() < 0.5f ? EffectDirection.Positive : EffectDirection.Negative;
-        var strength = RandomPercentage() < 0.5f ? EffectStrength.Strong: EffectStrength.Weak;
+        var direction = UnityEngine.Random.value < 0.5f ? EffectDirection.Positive : EffectDirection.Negative;
+        var strength = UnityEngine.Random.value < 0.5f ? EffectStrength.Strong: EffectStrength.Weak;
 
         market.SetNewPriceEffect(new PriceEffect(industry, direction, strength));
 
@@ -38,10 +45,6 @@ public class NewsSource : MonoBehaviour {
         var newsType = direction == EffectDirection.Positive ? "good" : "bad";
         var message = string.Format("Some {0}{1} news for {2}", newsStrength, newsType, industry);
         MessageCentral.Instance.DisplayMessage("News", message);
-    }
-
-    private float RandomPercentage() {
-        return Random.value;
     }
 
 }

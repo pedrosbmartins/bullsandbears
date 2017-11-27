@@ -36,8 +36,9 @@ public class StockTableRow : MonoBehaviour {
         this.player = player;
         FillInfo(stock);
         stock.OnProcessed += UpdateData;
-        this.player.OnBuyStock += HandleOnBuyStock;
-        this.player.OnSellStock += HandleOnSellStock;
+        this.player.OnBuyStock += OwnedStocksCountChanged;
+        this.player.OnSellStock += OwnedStocksCountChanged;
+        this.player.OnBorrowStock += OwnedStocksCountChanged;
     }
 
     public void Select() {
@@ -73,13 +74,7 @@ public class StockTableRow : MonoBehaviour {
         }
     }
 
-    private void HandleOnBuyStock(Stock stock) {
-        if (stock.Symbol == AssignedStockSymbol) {
-            StocksOwnedTextField.text = CalculateOwnedCount().ToString();
-        }
-    }
-
-    private void HandleOnSellStock(Stock stock) {
+    private void OwnedStocksCountChanged(Stock stock) {
         if (stock.Symbol == AssignedStockSymbol) {
             StocksOwnedTextField.text = CalculateOwnedCount().ToString();
         }

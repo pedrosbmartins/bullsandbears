@@ -5,21 +5,6 @@ using UnityEngine;
 using UnityEngine.UI;
 
 public enum MarketPanelContext { Idle, RowSelected, RowSelectedAndMarketActive }
-public enum KeyBindingAction { Help, Buy, Sell}
-
-public class KeyBinding {
-
-    public KeyBindingAction Action { get; private set; }
-    public KeyCode Key { get; private set; }
-    public List<MarketPanelContext> Contexts { get; private set; }
-
-    public KeyBinding(KeyBindingAction action, KeyCode key, List<MarketPanelContext> contexts) {
-        Action = action;
-        Key = key;
-        Contexts = contexts;
-    }
-
-}
 
 public class MarketPanel : MonoBehaviour {
 
@@ -29,7 +14,9 @@ public class MarketPanel : MonoBehaviour {
     public StockTable Table;
     public KeyBindingPanel KeyBindingPanel;
 
-    public BuyModal BuyModalPrefab;
+    public bool AutoCheckInput = false;
+
+    public QuantityModal QuantityModalPrefab;
     public AlertModal AlertModalPrefab;
 
     public AudioClip SellSoundEffect;
@@ -43,6 +30,7 @@ public class MarketPanel : MonoBehaviour {
         player = GetComponentInParent<Player>();
 
         market.OnDayStarted += HandleMarketDayStarted;
+        market.OnDayEnded += HandleMarketDayEnded;
         market.OnStockAdded += HandleStockAdded;
         Table.OnRowSelected += HandleTableRowSelected;
         Table.OnRowSelectionCleared += HandleTableRowSelectionCleared;
@@ -52,6 +40,12 @@ public class MarketPanel : MonoBehaviour {
 
     private void Start() {
         KeyBindingPanel.Render(CurrentContext);
+    }
+
+    private void Update() {
+        if (AutoCheckInput) {
+            CheckInput();
+        }
     }
 
     public void CheckInput() {
@@ -98,43 +92,69 @@ public class MarketPanel : MonoBehaviour {
             case KeyBindingAction.Sell:
                 if  (market.ActiveStock == null 
                  || !player.OwnedStocks.ContainsKey(market.ActiveStock.Symbol)
-                 ||  player.OwnedStocks[market.ActiveStock.Symbol] == 0) {
+                 ||  player.OwnedStocks[market.ActiveStock.Symbol] <= 0
+                 ||  market.CurrentState != MarketState.DayStarted) {
                     return;
                 }
                 DisplaySellModal();
                 break;
+            case KeyBindingAction.Short:
+                if (market.ActiveStock == null
+                 || market.CurrentState != MarketState.DayStarted
+                 || player.Owns(market.ActiveStock)) {
+                    return;
+                }
+                DisplayShortModal();
+                break;
         }
     }
 
-    private void DisplayBuyModal() {
-        BuyModal buyModal = Instantiate(BuyModalPrefab, transform.root, false);
-        buyModal.SetTitle(String.Format("BUY {0}", market.ActiveStock.Symbol));
+    private void DisplayAlertModal(string title, string message, Action onSubmit, Action onExit) {
+        var modal = Instantiate(AlertModalPrefab, transform.root, false);
+        modal.SetTitle(title);
+        modal.SetMessage(message);
         isModalOpened = true;
-        buyModal.OnQuantitySubmit += HandleBuyModalSubmit;
-        buyModal.OnExit += HandleModalExit;
+        modal.OnSubmit += onSubmit;
+        modal.OnExit += onExit;
     }
 
-    private void DisplaySellModal() {
-        AlertModal modal = Instantiate(AlertModalPrefab, transform.root, false);
-        modal.SetTitle(String.Format("SELL {0}", market.ActiveStock.Symbol));
-        modal.SetMessage("Sell all stocks?");
+    private void DisplayQuantityModal(string title, Action<int> onSubmit) {
+        var modal = Instantiate(QuantityModalPrefab, transform.root, false);
+        modal.SetTitle(title);
         isModalOpened = true;
-        modal.OnSubmit += HandleSellModalSubmit;
+        modal.OnSubmit += onSubmit;
         modal.OnExit += HandleModalExit;
     }
 
-    private void DisplayInsufficientFundsModal(string stockSymbol, int quantity) {
-        AlertModal modal = Instantiate(AlertModalPrefab, transform.root, false);
-        modal.SetTitle("WARNING");
-        modal.SetMessage(
-            String.Format("Insufficient funds to buy {0} {1} stocks", quantity, stockSymbol)
-        );
-        isModalOpened = true;
-        modal.OnSubmit += HandleCantAffordModalExit;
-        modal.OnExit += HandleCantAffordModalExit;
+    private void DisplayBuyModal() {
+        var stock = market.ActiveStock;
+        var title = String.Format("BUY {0}", stock.Symbol);
+        if (player.Borrowed(stock)) {
+            DisplayAlertModal(title, "Buy all shorted stocks?", HandleBuyAllModalSubmit, HandleModalExit);
+        }
+        else {
+            DisplayQuantityModal(title, HandleBuyQuantityModalSubmit);
+        }
     }
 
-    private void HandleBuyModalSubmit(int quantity) {
+    private void DisplayShortModal() {
+        DisplayQuantityModal(String.Format("SHORT {0}", market.ActiveStock.Symbol), HandleShortModalSubmit);
+    }
+
+    private void DisplaySellModal() {
+        DisplayAlertModal(String.Format("SELL {0}", market.ActiveStock.Symbol), "Sell all stocks?", HandleSellModalSubmit, HandleModalExit);
+    }
+
+    private void DisplayInsufficientFundsModal(string stockSymbol, int quantity) {
+        DisplayAlertModal(
+            "WARNING",
+            String.Format("Insufficient funds to buy {0} {1} stocks", quantity, stockSymbol),
+            HandleCantAffordModalExit,
+            HandleCantAffordModalExit
+        );
+    }
+
+    private void HandleBuyQuantityModalSubmit(int quantity) {
         HandleModalExit();
         Stock stock = market.ActiveStock;
         if (player.Affords(stock, quantity)) {
@@ -145,6 +165,16 @@ public class MarketPanel : MonoBehaviour {
         }
     }
 
+    private void HandleBuyAllModalSubmit() {
+        HandleModalExit();
+        player.BuyAllShorted(market.ActiveStock);
+    }
+
+    private void HandleShortModalSubmit(int quantity) {
+        HandleModalExit();
+        player.Short(market.ActiveStock, quantity);
+    }
+
     private void HandleCantAffordModalExit() {
         DisplayBuyModal();
     }
@@ -152,7 +182,7 @@ public class MarketPanel : MonoBehaviour {
     private void HandleSellModalSubmit() {
         HandleModalExit();
         AudioSource.PlayClipAtPoint(SellSoundEffect, Vector3.one);
-        player.Sell(market.ActiveStock);
+        player.SellAll(market.ActiveStock);
     }
 
     private void HandleModalExit() {
@@ -178,6 +208,10 @@ public class MarketPanel : MonoBehaviour {
         if (CurrentContext == MarketPanelContext.RowSelected) {
             HandleTableRowSelected(Table.GetCurrentRow());
         }
+    }
+
+    private void HandleMarketDayEnded() {
+        KeyBindingPanel.Render(CurrentContext);
     }
 
     private void HandleStockAdded(Stock stock) {

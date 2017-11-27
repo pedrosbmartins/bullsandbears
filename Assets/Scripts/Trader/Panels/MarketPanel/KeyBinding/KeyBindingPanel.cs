@@ -12,6 +12,9 @@ public class KeyBindingPanel : MonoBehaviour {
         KeyBindings.Add(HelpKeyBinding());
         KeyBindings.Add(BuyKeyBinding());
         KeyBindings.Add(SellKeyBinding());
+        if (GameAchievements.IsMechanicUnlocked(Mechanic.Short)) {
+            KeyBindings.Add(ShortKeyBinding());
+        }
     }
 
     public void Render(MarketPanelContext currentContext) {
@@ -58,6 +61,14 @@ public class KeyBindingPanel : MonoBehaviour {
         return new KeyBinding(
             KeyBindingAction.Sell,
             KeyCode.F3,
+            new List<MarketPanelContext>() { MarketPanelContext.RowSelectedAndMarketActive }
+        );
+    }
+
+    private KeyBinding ShortKeyBinding() {
+        return new KeyBinding(
+            KeyBindingAction.Short,
+            KeyCode.F4,
             new List<MarketPanelContext>() { MarketPanelContext.RowSelectedAndMarketActive }
         );
     }

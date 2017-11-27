@@ -657,12 +657,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e331fc7d8fa813c4c8fb47d8178664c2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Market: {fileID: 0}
-  Player: {fileID: 0}
   Table: {fileID: 114909979554819984}
   KeyBindingPanel: {fileID: 114496542745036206}
-  ModalContainer: {fileID: 0}
-  BuyModalPrefab: {fileID: 114430853264308332, guid: 941ce16ec8bf11c47aebcb6105a9deab,
+  AutoCheckInput: 0
+  QuantityModalPrefab: {fileID: 114430853264308332, guid: 941ce16ec8bf11c47aebcb6105a9deab,
     type: 2}
   AlertModalPrefab: {fileID: 114179558810335074, guid: 1c36557484cb1b24f9e62d5687d109f7,
     type: 2}

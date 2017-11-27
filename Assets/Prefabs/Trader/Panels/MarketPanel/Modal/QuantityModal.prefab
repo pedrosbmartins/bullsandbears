@@ -265,7 +265,7 @@ GameObject:
   - component: {fileID: 114682544876150690}
   - component: {fileID: 114430853264308332}
   m_Layer: 5
-  m_Name: BuyModal
+  m_Name: QuantityModal
   m_TagString: Modal
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

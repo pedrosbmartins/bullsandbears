@@ -1,17 +1,13 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using UnityEngine;
 
 public class Trader : MonoBehaviour {
 
-    private StockMarket market;
-    private Player player;
-
-    public MarketPanel MarketPanel;
     public AlertModal AlertModalPrefab;
     public DayDisplay DayDisplayPrefab;
-
     public MarketPanel MarketPanelPrefab;
     public StockPanel StockPanelPrefab;
     public MessagePanel MessagePanelPrefab;
@@ -23,7 +19,10 @@ public class Trader : MonoBehaviour {
     public event Action OnExitProgram = delegate { };
     public event Action OnRebootProgram = delegate { };
 
+    private StockMarket market;
+    private Player player;
     private AudioSource Music;
+    private MarketPanel marketPanel;
 
     private bool isDisplayingDayCount = false;
     private bool isModalOpened = false; 
@@ -31,6 +30,10 @@ public class Trader : MonoBehaviour {
 
     private float fastMusicPitch = 1.2f;
     private float normalMusicPitch = 1f;
+
+    private List<Achievement> CreateAchievementList() {
+        return null;
+    }
 
     private void Awake() {
         market = GetComponent<StockMarket>();
@@ -41,7 +44,7 @@ public class Trader : MonoBehaviour {
         player.OnAllPositionsClosed += HandleAllPositionsClosed;
 
         Instantiate(AccountPanelPrefab, LeftUIPanelContainer, false);
-        MarketPanel = Instantiate(MarketPanelPrefab, LeftUIPanelContainer, false);
+        marketPanel = Instantiate(MarketPanelPrefab, LeftUIPanelContainer, false);
         Instantiate(MessagePanelPrefab, RightUIPanelContainer, false);
         Instantiate(StockPanelPrefab, RightUIPanelContainer, false);
     }
@@ -58,7 +61,7 @@ public class Trader : MonoBehaviour {
 
     private void RunTraderProgram() {
         isDisplayingDayCount = false;
-        DisplayInitialMessages();
+        DisplayWelcomeMessages();
         market.Initialize();
     }
 
@@ -106,6 +109,8 @@ public class Trader : MonoBehaviour {
      * 
      */
     private void CheckKeyboardInput() {
+        CheckResetData();
+
         if (isModalOpened || isDisplayingDayCount) {
             return;
         }
@@ -119,15 +124,24 @@ public class Trader : MonoBehaviour {
             }
         }
         else if (Input.GetKeyUp(KeyCode.Escape)) {
-            if (MarketPanel.CurrentContext == MarketPanelContext.Idle) {
+            if (marketPanel.CurrentContext == MarketPanelContext.Idle) {
                 DisplayExitModal();
             }
             else {
-                MarketPanel.CheckInput();
+                marketPanel.CheckInput();
             }
         }
         else {
-            MarketPanel.CheckInput();
+            marketPanel.CheckInput();
+        }
+    }
+
+    private void CheckResetData() {
+        if (Input.GetKey(KeyCode.LeftControl) &&
+            Input.GetKey(KeyCode.LeftShift) &&
+            Input.GetKeyUp(KeyCode.Delete)) {
+            GameData.Reset();
+            Debug.Log("Game Data has been reset");
         }
     }
 
@@ -143,7 +157,8 @@ public class Trader : MonoBehaviour {
 
     private void HandleMarketDayEnded() {
         Music.pitch = normalMusicPitch;
-        MarketPanel.DestroyOpenedModals();
+        GetComponent<NewsSource>().Stop();
+        marketPanel.DestroyOpenedModals();
         DisplayMarketEndedModal();
     }
 
@@ -165,7 +180,7 @@ public class Trader : MonoBehaviour {
         MessageCentral.Instance.Destroy();
     }
 
-    private void DisplayInitialMessages() {
+    private void DisplayWelcomeMessages() {
         var messages = new string[] {
             "Good morning, day traders",
             "The market will soon be open",
@@ -192,6 +207,7 @@ public class Trader : MonoBehaviour {
     private void SaveData() {
         isProgressSaved = true;
         player.SaveBalance();
+        GameAchievements.Check(player.Account.Balance);
         GameData.IncrementDayCount();
     }
 
