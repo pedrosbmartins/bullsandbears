@@ -169,13 +169,19 @@ public class StockMarket : MonoBehaviour, IRandomGenerator {
     }
 
     private void DisplayMarketDayStartedMessages() {
-        var messages = new string[] {
+        var messages = new List<string>() {
             "The market is open",
             "It closes at 05:00PM",
-            "Your current balance target is:",
-            GameAchievements.Current().BalanceTarget.ToString("C2"),
         };
-        MessageCentral.Instance.DisplayMessages("Message", messages, true);
+
+        if (!GameAchievements.IsInLastAchievementLevel()) {
+            messages.AddRange(new List<string>() {
+                "Your current balance target is:",
+                GameAchievements.Current().BalanceTarget.ToString("C2"),
+            });
+        }
+
+        MessageCentral.Instance.DisplayMessages("Message", messages.ToArray(), true);
     }
 
     private void DisplayMarketDayEndedMessages() {

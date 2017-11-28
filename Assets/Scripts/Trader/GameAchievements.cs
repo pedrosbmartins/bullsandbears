@@ -24,8 +24,8 @@ public class GameAchievements {
 
     public static readonly IList<Achievement> Levels = new ReadOnlyCollection<Achievement>
         (new List<Achievement>() {
-            new Achievement(new Mechanic[] { }, 10000),
-            new Achievement(new Mechanic[] { Mechanic.News }, 50000),
+            new Achievement(new Mechanic[] { }, 100000),
+            new Achievement(new Mechanic[] { Mechanic.News }, 1000000),
             new Achievement(new Mechanic[] { Mechanic.News, Mechanic.Short }, 0),
         });
 
