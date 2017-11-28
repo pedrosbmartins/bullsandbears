@@ -13,6 +13,13 @@ public class GameData {
     private const string ACHIEVEMENT_LEVEL_KEY = "AchievementLevel";
     private const int ACHIEVEMENT_LEVEL_DEFAULT = 0;
 
+    private const string MUSIC_ON_KEY = "MusicOn";
+    private const bool MUSIC_ON_DEFAULT = true;
+
+    private const string SFX_ON_KEY = "SFXOn";
+    private const bool SFX_ON_DEFAULT = true;
+
+    #region TerminalColor
     private const string RED_KEY = "TerminalColorRed";
     private const float RED_DEFAULT = 0.22f;
 
@@ -21,6 +28,7 @@ public class GameData {
 
     private const string BLUE_KEY = "TerminalColorBlue";
     private const float BLUE_DEFAULT = 0.20f;
+    #endregion
 
     public static float GetBalance() {
         return PlayerPrefs.GetFloat(BALANCE_KEY, BALANCE_DEFAULT);
@@ -64,8 +72,39 @@ public class GameData {
         PlayerPrefs.SetFloat(BLUE_KEY, color.b);
     }
 
+    public static bool GetMusicOn() {
+        return GetBool(MUSIC_ON_KEY, MUSIC_ON_DEFAULT);
+    }
+
+    public static void SetMusicOn(bool musicOn) {
+        SetBool(MUSIC_ON_KEY, musicOn);
+    }
+
+    public static bool GetSFXOn() {
+        return GetBool(SFX_ON_KEY, SFX_ON_DEFAULT);
+    }
+
+    public static void SetSFXOn(bool sfxOn) {
+        SetBool(SFX_ON_KEY, sfxOn);
+    }
+
     public static void Reset() {
         PlayerPrefs.DeleteAll();
+    }
+
+    static void SetBool(string key, bool value) {
+        PlayerPrefs.SetInt(key, value ? 1 : 0);
+    }
+
+    static bool GetBool(string key, bool defaultValue) {
+        if (PlayerPrefs.HasKey(key)) {
+            return GetBool(key);
+        }
+        return defaultValue;
+    }
+
+    static bool GetBool(string key) {
+        return PlayerPrefs.GetInt(key) == 1 ? true : false;
     }
 
 }

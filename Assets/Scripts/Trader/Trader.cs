@@ -21,7 +21,7 @@ public class Trader : MonoBehaviour {
 
     private StockMarket market;
     private Player player;
-    private AudioSource Music;
+    private AudioSource music;
     private MarketPanel marketPanel;
 
     private bool isDisplayingDayCount = false;
@@ -39,7 +39,7 @@ public class Trader : MonoBehaviour {
         market = GetComponent<StockMarket>();
         player = GetComponent<Player>();
 
-        Music = GetComponent<AudioSource>();
+        music = GetComponent<AudioSource>();
         market.OnDayEnded += HandleMarketDayEnded;
         player.OnAllPositionsClosed += HandleAllPositionsClosed;
 
@@ -50,6 +50,9 @@ public class Trader : MonoBehaviour {
     }
 
     private void Start() {
+        if (GameData.GetMusicOn()) {
+            music.Play();
+        }
         DisplayDayCount();
     }
 
@@ -71,11 +74,13 @@ public class Trader : MonoBehaviour {
     }
 
     private void CheckMusicPitch() {
-        if (Music.pitch == normalMusicPitch && 
-            market.CurrentState == MarketState.DayStarted && 
-            TwoHoursToEndDay()) {
-            MessageCentral.Instance.DisplayMessages("Message", new string[] { "The market is closing in two hours!" }, true);
-            Music.pitch = fastMusicPitch;
+        if (GameData.GetMusicOn()) {
+            if (music.pitch == normalMusicPitch &&
+                market.CurrentState == MarketState.DayStarted &&
+                TwoHoursToEndDay()) {
+                MessageCentral.Instance.DisplayMessages("Message", new string[] { "The market is closing in two hours!" }, true);
+                music.pitch = fastMusicPitch;
+            }
         }
     }
 
@@ -93,6 +98,8 @@ public class Trader : MonoBehaviour {
      * F2     Buy          Market.DayStarted and     (marketpanel)
      *                     MarketPanel.RowSelected
      * F3     Sell         Market.DayStarted and     (marketpanel)
+     *                     MarketPanel.RowSelected
+     * F4     Short        Market.DayStarted and     (marketpanel)
      *                     MarketPanel.RowSelected
      *                     
      * Enter  OpenMarket   Market.Idle               ######## here ########
@@ -156,7 +163,7 @@ public class Trader : MonoBehaviour {
     }
 
     private void HandleMarketDayEnded() {
-        Music.pitch = normalMusicPitch;
+        music.pitch = normalMusicPitch;
         GetComponent<NewsSource>().Stop();
         marketPanel.DestroyOpenedModals();
         DisplayMarketEndedModal();

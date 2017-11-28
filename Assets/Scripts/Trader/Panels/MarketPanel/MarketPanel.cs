@@ -181,7 +181,9 @@ public class MarketPanel : MonoBehaviour {
 
     private void HandleSellModalSubmit() {
         HandleModalExit();
-        AudioSource.PlayClipAtPoint(SellSoundEffect, Vector3.one);
+        if (GameData.GetSFXOn()) {
+            AudioSource.PlayClipAtPoint(SellSoundEffect, Vector3.one);
+        }
         player.SellAll(market.ActiveStock);
     }
 

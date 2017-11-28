@@ -583,10 +583,11 @@ GameObject:
   m_Component:
   - component: {fileID: 1132512628}
   - component: {fileID: 1132512627}
+  - component: {fileID: 1132512631}
   - component: {fileID: 1132512629}
   - component: {fileID: 1132512630}
   m_Layer: 0
-  m_Name: Sounds
+  m_Name: SFX
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -630,7 +631,7 @@ AudioSource:
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 8300000, guid: 3afeb6262ab9d0a44bffabe3341fbe2c, type: 3}
-  m_PlayOnAwake: 1
+  m_PlayOnAwake: 0
   m_Volume: 0.75
   m_Pitch: 1
   Loop: 1
@@ -710,7 +711,7 @@ AudioSource:
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 8300000, guid: a63f29d243943814685bc945cefdaf59, type: 3}
-  m_PlayOnAwake: 1
+  m_PlayOnAwake: 0
   m_Volume: 0.5
   m_Pitch: 1
   Loop: 0
@@ -780,6 +781,19 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 0
+--- !u!114 &1132512631
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1132512626}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c2dd45505b4c41d40b50e9a8a317d367, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  HummingSoundSource: {fileID: 1132512629}
+  BootSoundSource: {fileID: 1132512630}
 --- !u!1 &1733182959
 GameObject:
   m_ObjectHideFlags: 0

@@ -162,7 +162,7 @@ AudioSource:
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 8300000, guid: 2b173fab5f755ac4fb4df7b8063cf1e9, type: 3}
-  m_PlayOnAwake: 1
+  m_PlayOnAwake: 0
   m_Volume: 1
   m_Pitch: 1
   Loop: 0
@@ -402,8 +402,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 375dd4e22f04abb43aac14ce1e59dcec, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  SFX: {fileID: 82163289922372546}
   Label: {fileID: 114481020107096218}
-  ModalBody: {fileID: 224637856159520566}
 --- !u!114 &114883704487354840
 MonoBehaviour:
   m_ObjectHideFlags: 1

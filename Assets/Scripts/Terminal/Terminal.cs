@@ -96,11 +96,14 @@ public class Terminal : MonoBehaviour {
             case CommandAction.Reset:
                 HandleResetCommand();
                 break;
-            case CommandAction.Trader:
-                HandleTraderCommand();
-                break;
             case CommandAction.Shutdown:
                 HandleShutdownCommand();
+                break;
+            case CommandAction.Sound:
+                HandleSoundCommand(matches);
+                break;
+            case CommandAction.Trader:
+                HandleTraderCommand();
                 break;
             default:
                 DisplayTextLine("Error: Invalid command action", true);
@@ -215,6 +218,32 @@ public class Terminal : MonoBehaviour {
         DisplayTextLine("Data has been reset", true);
     }
 
+    private void HandleSoundCommand(MatchCollection matches) {
+        GroupCollection groups = matches[0].Groups;
+        string option = groups[2].Value;
+
+        var music = false;
+        var sfx = false;
+
+        switch (option) {
+            case "on":
+                music = true;
+                sfx = true;
+                break;
+            case "off":
+                break;
+            case "music":
+                music = true;
+                break;
+            case "sfx":
+                sfx = true;
+                break;
+        }
+
+        GameData.SetMusicOn(music);
+        GameData.SetSFXOn(sfx);
+    }
+
     private IEnumerator DisplayBootMessage() {
         yield return new WaitForSeconds(bootDelayBase);
         DisplayTextLine("Bulls & Bears Terminal Version 1.0");
@@ -239,7 +268,8 @@ public class Terminal : MonoBehaviour {
             new Command("color r,g,b", @"^(color|c) (\d{1,3}),(\d{1,3}),(\d{1,3})$", "Set terminal color (0-255)", CommandAction.Color),
             new Command("help", @"^(help|h)$", "Display all available commands", CommandAction.Help),
             new Command("reset", @"^(reset|r)$", "Reset all data", CommandAction.Reset),
-            new Command("shutdown", @"^(shutdown|s)$", "Shutdown the system", CommandAction.Shutdown),
+            new Command("shutdown", @"^(shutdown|sd)$", "Shutdown the system", CommandAction.Shutdown),
+            new Command("sound <opt>", @"^(sound|s) (on|off|music|sfx)$", "Set sound (on,off,music,sfx)", CommandAction.Sound),
             new Command("trader", @"^(trader|t)$", "Run trader program", CommandAction.Trader),       
         };
     }
@@ -262,4 +292,4 @@ public class Command {
 
 }
 
-public enum CommandAction { Color, Help, Reset, Shutdown, Trader };
+public enum CommandAction { Color, Help, Reset, Shutdown, Sound, Trader };

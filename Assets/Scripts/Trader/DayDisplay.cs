@@ -8,11 +8,15 @@ public class DayDisplay : MonoBehaviour {
 
     private const float DISPLAY_SECONDS = 1.6f;
 
+    public AudioSource SFX;
     public Text Label;
 
     public event Action OnHide = delegate { };
 
     private void Start() {
+        if (GameData.GetSFXOn()) {
+            SFX.Play();
+        }
         StartCoroutine(Display());
     }
 

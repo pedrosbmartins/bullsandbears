@@ -203,7 +203,7 @@ AudioSource:
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 8300000, guid: 8accfbdcd672f424e9121005d6897694, type: 3}
-  m_PlayOnAwake: 1
+  m_PlayOnAwake: 0
   m_Volume: 1
   m_Pitch: 1
   Loop: 1
@@ -495,7 +495,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2a4bf9ba4eb75a84b96b9b331fa13800, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Market: {fileID: 114172033984524616}
 --- !u!114 &114505809419782900
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -554,7 +553,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f5c3204f4f3e96045b1c94a41524ade7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  MarketPanel: {fileID: 0}
   AlertModalPrefab: {fileID: 114179558810335074, guid: 1c36557484cb1b24f9e62d5687d109f7,
     type: 2}
   DayDisplayPrefab: {fileID: 114834508329678624, guid: 042d71b5b28b3ac4ca3f686b1ddb7a0f,
