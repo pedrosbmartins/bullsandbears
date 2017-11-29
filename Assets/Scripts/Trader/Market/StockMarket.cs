@@ -103,7 +103,7 @@ public class StockMarket : MonoBehaviour, IRandomGenerator {
         return TimeTracker.GetCurrentTime();
     }
 
-    public void SetNewPriceEffect(PriceEffect effect) {
+    public void SetPriceEffect(PriceEffect effect) {
         StopCoroutine("PriceEffectTimeout");
         StockList.ForEach(stock => {
             if (stock.CompanyIndustry == effect.AffectedIndustry) {
@@ -200,17 +200,23 @@ public class StockMarket : MonoBehaviour, IRandomGenerator {
 
     private List<Company> GenerateCompanylist() {
         return new List<Company>() {
-            new Company("AAPN", "Pineapple, Inc.", Industry.Technology),
-            new Company("GOOF", "Goofle LLC", Industry.Technology),
-            new Company("MIFT", "Minisoft Corporation", Industry.Technology),
-            new Company("INDC", "Indell Corporation", Industry.Technology),
-            new Company("RFST", "Rainforest.com, Inc.", Industry.Technology),
-            new Company("ZON", "Ezon Moboil Corporation", Industry.OilAndGas),
-            new Company("PETL", "Petrosil S.A.", Industry.OilAndGas),
-            new Company("CVO", "Chevroom Corporation", Industry.OilAndGas),
-            new Company("JPMO", "JPMoney Chase & Co.", Industry.BanksAndFinance),
-            new Company("T", "Towngroup, Inc.", Industry.BanksAndFinance),
-            new Company("GSA", "Golden Sax Group, Inc.", Industry.BanksAndFinance),
+            new Company("AAPN", "Pineapple, Inc.",           Industry.Technology),
+            new Company("GOOF", "Goofle LLC",                Industry.Technology),
+            new Company("MIFT", "Minisoft Corporation",      Industry.Technology),
+            new Company("INDC", "Indell Corporation",        Industry.Technology),
+            new Company("RFST", "Rainforest.com, Inc.",      Industry.Technology),
+            new Company("ZON",  "Ezon Moboil Corporation",   Industry.OilAndGas),
+            new Company("PETL", "Petrosil S.A.",             Industry.OilAndGas),
+            new Company("CVO",  "Chevroom Corporation",      Industry.OilAndGas),
+            new Company("JPMO", "JPMoney Chase & Co.",       Industry.BanksAndFinance),
+            new Company("T",    "Towngroup, Inc.",           Industry.BanksAndFinance),
+            new Company("GSA",  "Golden Sax Group, Inc.",    Industry.BanksAndFinance),
+            new Company("MS",   "Martha Steven",             Industry.BanksAndFinance),
+            new Company("BAC",  "Bank of Armenica, Corp.",   Industry.BanksAndFinance),
+            new Company("SM",   "Specific Motors Company",   Industry.Automotive),
+            new Company("TM",   "ToyYoda Motor Corpotation", Industry.Automotive),
+            new Company("F",    "Afford Motor Company",      Industry.Automotive),
+            new Company("FOW",  "Folkscar Group",            Industry.Automotive),
         };
     }
 

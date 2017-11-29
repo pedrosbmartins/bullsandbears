@@ -125,7 +125,7 @@ Camera:
   m_Enabled: 1
   serializedVersion: 2
   m_ClearFlags: 1
-  m_BackGroundColor: {r: 0, g: 0, b: 0, a: 0}
+  m_BackGroundColor: {r: 0.058823526, g: 0.058823526, b: 0.058823526, a: 0}
   m_NormalizedViewPortRect:
     serializedVersion: 2
     x: 0
@@ -430,6 +430,22 @@ Prefab:
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 80e81974dc6af0b4ab5cb9c80fd748f4, type: 2}
   m_IsPrefabParent: 0
+--- !u!1 &726264041 stripped
+GameObject:
+  m_PrefabParentObject: {fileID: 1834901295363236, guid: 80e81974dc6af0b4ab5cb9c80fd748f4,
+    type: 2}
+  m_PrefabInternal: {fileID: 547018141}
+--- !u!114 &726264045
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 726264041}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: be40c1eb3b4fc85479ce84d8f286403c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &774120515
 GameObject:
   m_ObjectHideFlags: 0

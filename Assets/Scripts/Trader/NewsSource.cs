@@ -1,18 +1,21 @@
 ﻿using System;
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class NewsSource : MonoBehaviour {
 
-    private const float FIRST_NEWS_GAP = 10f;
-    private const float NEWS_GAP_MIN = 20f;
-    private const float NEWS_GAP_MAX = 25f;
+    [SerializeField] private bool forceMechanic = false;
+
+    [SerializeField] private float firstNewsDelay = 10f;
+    [SerializeField] private float newsGapMin = 20f;
+    [SerializeField] private float newsGapMax = 25f;
 
     private StockMarket market;
 
     private void Awake() {
         market = GetComponent<StockMarket>();
-        if (GameAchievements.IsMechanicUnlocked(Mechanic.News)) {
+        if (forceMechanic || GameAchievements.IsMechanicUnlocked(Mechanic.News)) {
             market.OnDayStarted += Initialize;
         }
     }
@@ -26,25 +29,50 @@ public class NewsSource : MonoBehaviour {
     }
 
     private IEnumerator GenerateNews() {
-        yield return new WaitForSeconds(FIRST_NEWS_GAP);
+        yield return new WaitForSeconds(firstNewsDelay);
         while (true) {
             CreateRandomNewsStory();
-            yield return new WaitForSeconds(UnityEngine.Random.Range(NEWS_GAP_MIN, NEWS_GAP_MAX));
+            yield return new WaitForSeconds(UnityEngine.Random.Range(newsGapMin, newsGapMax));
         }
     }
 
     private void CreateRandomNewsStory() {
-        var randomIndex = Mathf.FloorToInt((market.StockList.Count - 1) * UnityEngine.Random.value);
-        var industry = market.StockList[randomIndex].CompanyIndustry;
-        var direction = UnityEngine.Random.value < 0.5f ? EffectDirection.Positive : EffectDirection.Negative;
-        var strength = UnityEngine.Random.value < 0.5f ? EffectStrength.Strong: EffectStrength.Weak;
+        var randomIndex = Mathf.FloorToInt((newsList.Count - 1) * UnityEngine.Random.value);
+        var news = newsList[randomIndex];
 
-        market.SetNewPriceEffect(new PriceEffect(industry, direction, strength));
+        var industry = news.Industry;
+        var direction = news.PriceEffectDirection;
+        var strength = news.PriceEffectStrength;
+        market.SetPriceEffect(new PriceEffect(industry, direction, strength));
 
-        var newsStrength = strength == EffectStrength.Strong ? "really " : "";
-        var newsType = direction == EffectDirection.Positive ? "good" : "bad";
-        var message = string.Format("Some {0}{1} news for {2}", newsStrength, newsType, industry);
-        MessageCentral.Instance.DisplayMessage("News", message);
+        MessageCentral.Instance.DisplayMessage("News", news.Headline);
+    }
+
+    private List<News> newsList = new List<News>() {
+        new News(Industry.Technology,      "Everybody Mad at Tech Giants (Again)", EffectDirection.Negative, EffectStrength.Strong),
+        new News(Industry.Technology,      "Investors Delighted with Tech Giants", EffectDirection.Positive, EffectStrength.Strong),
+        new News(Industry.BanksAndFinance, "Credit Fraud Shakes Finance World",    EffectDirection.Negative, EffectStrength.Strong),
+        new News(Industry.BanksAndFinance, "Banks: Best Quarter In Recent Times",  EffectDirection.Positive, EffectStrength.Strong),
+        new News(Industry.OilAndGas,       "Environment Disaster, Oil To Blame",   EffectDirection.Negative, EffectStrength.Strong),
+        new News(Industry.OilAndGas,       "Oil Hits New Record High Prices",      EffectDirection.Positive, EffectStrength.Strong),
+        new News(Industry.Automotive,      "Nobody Wants To Own Cars Anymore",     EffectDirection.Negative, EffectStrength.Strong),
+        new News(Industry.Automotive,      "Investors Bet in Automotive Industry", EffectDirection.Positive, EffectStrength.Strong),
+    };
+
+}
+
+public class News {
+
+    public Industry Industry { get; private set; }
+    public string Headline { get; private set; }
+    public EffectDirection PriceEffectDirection { get; private set; }
+    public EffectStrength PriceEffectStrength { get; private set; }
+
+    public News(Industry industry, string headline, EffectDirection direction, EffectStrength strength) {
+        Industry = industry;
+        Headline = headline;
+        PriceEffectDirection = direction;
+        PriceEffectStrength = strength;
     }
 
 }

@@ -224,24 +224,34 @@ public class Terminal : MonoBehaviour {
 
         var music = false;
         var sfx = false;
+        string message;
 
         switch (option) {
             case "on":
                 music = true;
                 sfx = true;
+                message = "Sound has been turned on";
                 break;
             case "off":
+                message = "Sound has been turned off";
                 break;
             case "music":
                 music = true;
+                message = "Only music has been turned on";
                 break;
             case "sfx":
+                message = "Only sound effects have been turned on";
                 sfx = true;
+                break;
+            default:
+                message = "There was an error with the sound command";
                 break;
         }
 
         GameData.SetMusicOn(music);
         GameData.SetSFXOn(sfx);
+
+        DisplayTextLine(message, true);
     }
 
     private IEnumerator DisplayBootMessage() {

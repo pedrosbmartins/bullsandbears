@@ -1,6 +1,6 @@
 ﻿using System;
 
-public enum Industry { Technology, OilAndGas, BanksAndFinance };
+public enum Industry { Technology, OilAndGas, BanksAndFinance, Automotive };
 
 public class Company {
 
