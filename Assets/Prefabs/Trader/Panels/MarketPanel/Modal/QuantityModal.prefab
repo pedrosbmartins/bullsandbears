@@ -736,11 +736,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f0d1c518009cf6e4c90f35f972980d1d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Title: {fileID: 114984872267194092}
-  Message: {fileID: 0}
-  OkButton: {fileID: 114694414932907176}
-  QuantitySlider: {fileID: 114632002502807276}
-  QuantityField: {fileID: 114781141947419804}
+  titleField: {fileID: 114984872267194092}
+  messageField: {fileID: 0}
+  okButton: {fileID: 114694414932907176}
+  quantitySlider: {fileID: 114632002502807276}
+  quantityField: {fileID: 114781141947419804}
 --- !u!114 &114458840358422084
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -2001,8 +2001,8 @@ RectTransform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 1, y: 1}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}

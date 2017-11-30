@@ -6,15 +6,15 @@ using UnityEngine;
 
 public class Trader : MonoBehaviour {
 
-    public AlertModal AlertModalPrefab;
-    public DayDisplay DayDisplayPrefab;
-    public MarketPanel MarketPanelPrefab;
-    public StockPanel StockPanelPrefab;
-    public MessagePanel MessagePanelPrefab;
-    public AccountPanel AccountPanelPrefab;
+    [SerializeField] private AlertModal alertModalPrefab;
+    [SerializeField] private DayDisplay dayDisplayPrefab;
+    [SerializeField] private MarketPanel marketPanelPrefab;
+    [SerializeField] private StockPanel stockPanelPrefab;
+    [SerializeField] private MessagePanel messagePanelPrefab;
+    [SerializeField] private AccountPanel accountPanelPrefab;
 
-    public RectTransform LeftUIPanelContainer;
-    public RectTransform RightUIPanelContainer;
+    [SerializeField] private RectTransform leftUIPanelContainer;
+    [SerializeField] private RectTransform rightUIPanelContainer;
 
     public event Action OnExitProgram = delegate { };
     public event Action OnRebootProgram = delegate { };
@@ -28,25 +28,25 @@ public class Trader : MonoBehaviour {
     private bool isModalOpened = false; 
     private bool isProgressSaved = false;
 
-    private float fastMusicPitch = 1.2f;
     private float normalMusicPitch = 1f;
-
-    private List<Achievement> CreateAchievementList() {
-        return null;
-    }
+    private float highMusicPitch = 1.2f;
 
     private void Awake() {
         market = GetComponent<StockMarket>();
         player = GetComponent<Player>();
-
         music = GetComponent<AudioSource>();
+
         market.OnDayEnded += HandleMarketDayEnded;
         player.OnAllPositionsClosed += HandleAllPositionsClosed;
 
-        Instantiate(AccountPanelPrefab, LeftUIPanelContainer, false);
-        marketPanel = Instantiate(MarketPanelPrefab, LeftUIPanelContainer, false);
-        Instantiate(MessagePanelPrefab, RightUIPanelContainer, false);
-        Instantiate(StockPanelPrefab, RightUIPanelContainer, false);
+        InstantiatePanels();
+    }
+
+    private void InstantiatePanels() {
+        Instantiate(accountPanelPrefab, leftUIPanelContainer, false);
+        marketPanel = Instantiate(marketPanelPrefab, leftUIPanelContainer, false);
+        Instantiate(messagePanelPrefab, rightUIPanelContainer, false);
+        Instantiate(stockPanelPrefab, rightUIPanelContainer, false);
     }
 
     private void Start() {
@@ -57,12 +57,12 @@ public class Trader : MonoBehaviour {
     }
 
     private void DisplayDayCount() {
-        DayDisplay dayDisplay = Instantiate(DayDisplayPrefab, gameObject.transform, false);
+        DayDisplay dayDisplay = Instantiate(dayDisplayPrefab, gameObject.transform, false);
         isDisplayingDayCount = true;
-        dayDisplay.OnHide += RunTraderProgram;
+        dayDisplay.OnFinish += InitializeTraderProgram;
     }
 
-    private void RunTraderProgram() {
+    private void InitializeTraderProgram() {
         isDisplayingDayCount = false;
         DisplayWelcomeMessages();
         market.Initialize();
@@ -75,13 +75,21 @@ public class Trader : MonoBehaviour {
 
     private void CheckMusicPitch() {
         if (GameData.GetMusicOn()) {
-            if (music.pitch == normalMusicPitch &&
-                market.CurrentState == MarketState.DayStarted &&
-                TwoHoursToEndDay()) {
+            if (music.pitch == normalMusicPitch && IsMarketActiveAndDayEnding()) {
+                // increase pitch when market day is ending
+                // to give player a sense of rushing
                 MessageCentral.Instance.DisplayMessages("Message", new string[] { "The market is closing in two hours!" }, true);
-                music.pitch = fastMusicPitch;
+                music.pitch = highMusicPitch;
+            }
+            else if (music.pitch == highMusicPitch && market.CurrentState == MarketState.DayEnded) {
+                music.pitch = normalMusicPitch;
             }
         }
+    }
+
+    private bool IsMarketActiveAndDayEnding() {
+        return market.CurrentState == MarketState.DayStarted 
+            && TwoHoursToEndDay();
     }
 
     private bool TwoHoursToEndDay() {
@@ -94,29 +102,30 @@ public class Trader : MonoBehaviour {
      * Possible inputs:
      * 
      * Key    Action       Context                   Responsible
-     * F1     Help         Any                       (marketpanel)
-     * F2     Buy          Market.DayStarted and     (marketpanel)
+     * ---    ------       -------                   -----------
+     * F1     Help         Any                       MarketPanel
+     * F2     Buy          Market.DayStarted and     MarketPanel
      *                     MarketPanel.RowSelected
-     * F3     Sell         Market.DayStarted and     (marketpanel)
+     * F3     Sell         Market.DayStarted and     MarketPanel
      *                     MarketPanel.RowSelected
-     * F4     Short        Market.DayStarted and     (marketpanel)
+     * F4     Short        Market.DayStarted and     MarketPanel
      *                     MarketPanel.RowSelected
      *                     
-     * Enter  OpenMarket   Market.Idle               ######## here ########
-     *        NewDay       Market.Closed             ######## here ########
-     *        SubmitModal  isModalOpened             (modal)
-     *        SkipDayCount isDisplayingDayCount      (daydisplay)
+     * Enter  OpenMarket   Market.Idle               Trader (this script)
+     *        NewDay       Market.Closed             Trader (this script)
+     *        SubmitModal  isModalOpened             Modals
+     *        SkipDayCount isDisplayingDayCount      DayDisplay
      * 
-     * Esc    ExitModal    isModalOpened             (modal)
-     *        ExitProgram  MarketPanel.Idle          ######## here ########
-     *        DiselectRow  RowSelected               (marketpanel)
+     * Esc    ExitModal    isModalOpened             Modals
+     *        ExitProgram  MarketPanel.Idle          Trader (this script)
+     *        DiselectRow  RowSelected               MarketPanel
      *  
-     * UpDown ChangeRows   Any                       (marketpanel)
-     * < >    Quantity     isModalOpened             (buymodal)
+     * UpDown ChangeRows   Any                       MarketPanel
+     * < >    Quantity     isModalOpened             BuyModal
      * 
      */
     private void CheckKeyboardInput() {
-        CheckResetData();
+        CheckResetDataKeys();
 
         if (isModalOpened || isDisplayingDayCount) {
             return;
@@ -143,7 +152,7 @@ public class Trader : MonoBehaviour {
         }
     }
 
-    private void CheckResetData() {
+    private void CheckResetDataKeys() {
         if (Input.GetKey(KeyCode.LeftControl) &&
             Input.GetKey(KeyCode.LeftShift) &&
             Input.GetKeyUp(KeyCode.Delete)) {
@@ -152,35 +161,39 @@ public class Trader : MonoBehaviour {
         }
     }
 
-    private void DisplayExitModal() {
-        AlertModal alertModal = Instantiate(AlertModalPrefab, transform.root, false);
-        string message = isProgressSaved ? "Exit to terminal?" : "You'll lose this day progress. Continue?";
-        alertModal.SetTitle("EXIT");
-        alertModal.SetMessage(message);
-        alertModal.OnExit += HandleModalExit;
-        alertModal.OnSubmit += ExitProgram;
+    private void DisplayModal(Modal prefab, string title, string message, Action onSubmit, Action onExit) {
+        Modal modal = Instantiate(prefab, transform.root, false);
+        modal.SetTitle(title);
+        modal.SetMessage(message);
+        modal.OnSubmit += onSubmit;
+        modal.OnExit += onExit;
         isModalOpened = true;
     }
 
-    private void HandleMarketDayEnded() {
-        music.pitch = normalMusicPitch;
-        GetComponent<NewsSource>().Stop();
-        marketPanel.DestroyOpenedModals();
-        DisplayMarketEndedModal();
+    private void DisplayExitModal() {
+        string message = isProgressSaved ? "Exit to terminal?" : "You'll lose this day progress. Continue?";
+        DisplayModal(alertModalPrefab, "EXIT", message, ExitProgram, HandleModalExit);
     }
 
     private void DisplayMarketEndedModal() {
-        AlertModal alertModal = Instantiate(AlertModalPrefab, transform.root, false);
-        alertModal.SetTitle("MARKET CLOSED");
-        alertModal.SetMessage("Any open positions will be closed");
-        alertModal.OnExit += HandleMarketClosed;
-        alertModal.OnSubmit += HandleMarketClosed;
-        isModalOpened = true;
+        var title = "MARKET CLOSED";
+        var message = "Any open positions will be closed";
+        DisplayModal(alertModalPrefab, title, message, HandleMarketEndedModalClosed, HandleMarketEndedModalClosed);
     }
 
-    private void HandleMarketClosed() {
+    private void HandleMarketEndedModalClosed() {
         HandleModalExit();
         player.CloseAllPositions();
+    }
+
+    private void HandleModalExit() {
+        isModalOpened = false;
+    }
+
+    private void HandleMarketDayEnded() {
+        GetComponent<NewsSource>().Stop();
+        marketPanel.DestroyOpenedModals();
+        DisplayMarketEndedModal();
     }
 
     private void OnDestroy() {
@@ -213,13 +226,9 @@ public class Trader : MonoBehaviour {
 
     private void SaveData() {
         isProgressSaved = true;
-        player.SaveBalance();
+        player.SaveAccountBalance();
         GameAchievements.Check(player.Account.Balance);
         GameData.IncrementDayCount();
-    }
-
-    private void HandleModalExit() {
-        isModalOpened = false;
     }
 
     private void ExitProgram() {

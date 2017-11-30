@@ -6,15 +6,15 @@ using UnityEngine.UI;
 
 public class AccountPanel : MonoBehaviour {
 
+    [SerializeField] private Text accountField;
+    [SerializeField] private Text balanceField;
+    [SerializeField] private Text assetsField;
+
+    [SerializeField] private Text dayChangeField;
+    [SerializeField] private Text percentageDayChangeField;
+
     private StockMarket market;
     private Player player;
-
-    public Text AccountField;
-    public Text BalanceField;
-    public Text AssetsField;
-
-    public Text DayChangeField;
-    public Text PercentageDayChangeField;
 
     private void Awake() {
         market = GetComponentInParent<StockMarket>();
@@ -35,23 +35,24 @@ public class AccountPanel : MonoBehaviour {
         float balance = player.Account.Balance;
         float assetsValue = CalculateAssetsValue();
         float totalAccount = balance + assetsValue;
-        AccountField.text = totalAccount.ToString("N2");
-        BalanceField.text = balance.ToString("N2");
-        AssetsField.text = assetsValue.ToString("N2");
+        accountField.text = totalAccount.ToString("N2");
+        balanceField.text = balance.ToString("N2");
+        assetsField.text = assetsValue.ToString("N2");
     }
 
     private void UpdateChangeFields() {
         float change = player.Account.Balance - player.Account.InitialBalance;
         float percentageChange = change / player.Account.InitialBalance;
-        DayChangeField.text = String.Format("{0}{1}", change >= 0 ? "+" : "", change.ToString("N2"));
-        PercentageDayChangeField.text = String.Format("{0}{1}", percentageChange >= 0 ? "+" : "", percentageChange.ToString("P1"));
+        dayChangeField.text = String.Format("{0}{1}", change >= 0 ? "+" : "", change.ToString("N2"));
+        percentageDayChangeField.text = String.Format("{0}{1}", percentageChange >= 0 ? "+" : "", percentageChange.ToString("P1"));
     }
 
     private float CalculateAssetsValue() {
         float assetsValue = 0;
-        foreach (var asset in player.OwnedStocks) {
+        foreach (var asset in player.Portfolio) {
             var stockSymbol = asset.Key;
-            var quantity = Math.Abs(asset.Value); // shorted quantities are negative
+            // using absolute value because shorted quantities are negative
+            var quantity = Math.Abs(asset.Value);
             assetsValue += market.GetStock(stockSymbol).CurrentPrice() * quantity;
         }
         return assetsValue;

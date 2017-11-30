@@ -189,8 +189,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5a5ca3b3c06682340b0c7d2c80a3b731, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  MetaField: {fileID: 114475498415394164}
-  MessageField: {fileID: 114896710431961452}
+  metaField: {fileID: 114475498415394164}
+  messageField: {fileID: 114896710431961452}
 --- !u!114 &114540968626240664
 MonoBehaviour:
   m_ObjectHideFlags: 1

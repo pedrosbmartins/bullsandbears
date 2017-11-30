@@ -8,20 +8,18 @@ public enum MarketPanelContext { Idle, RowSelected, RowSelectedAndMarketActive }
 
 public class MarketPanel : MonoBehaviour {
 
-    private StockMarket market;
-    private Player player;
+    [SerializeField] private bool autoCheckInput = false;
 
-    public StockTable Table;
-    public KeyBindingPanel KeyBindingPanel;
-
-    public bool AutoCheckInput = false;
-
-    public QuantityModal QuantityModalPrefab;
-    public AlertModal AlertModalPrefab;
-
-    public AudioClip SellSoundEffect;
+    [SerializeField] private StockTable stockTable;
+    [SerializeField] private KeyBindingPanel keyBindingPanel;
+    [SerializeField] private QuantityModal quantityModalPrefab;
+    [SerializeField] private AlertModal alertModalPrefab;
+    [SerializeField] private AudioClip sellSoundEffect;
 
     public MarketPanelContext CurrentContext;
+
+    private StockMarket market;
+    private Player player;
 
     private bool isModalOpened = false;
 
@@ -32,20 +30,25 @@ public class MarketPanel : MonoBehaviour {
         market.OnDayStarted += HandleMarketDayStarted;
         market.OnDayEnded += HandleMarketDayEnded;
         market.OnStockAdded += HandleStockAdded;
-        Table.OnRowSelected += HandleTableRowSelected;
-        Table.OnRowSelectionCleared += HandleTableRowSelectionCleared;
+        stockTable.OnRowSelected += HandleTableRowSelected;
+        stockTable.OnRowSelectionCleared += HandleTableRowSelectionCleared;
 
         SetContext(MarketPanelContext.Idle);
     }
 
     private void Start() {
-        KeyBindingPanel.Render(CurrentContext);
+        keyBindingPanel.Render(CurrentContext);
     }
 
     private void Update() {
-        if (AutoCheckInput) {
+        if (autoCheckInput) {
             CheckInput();
         }
+    }
+
+    private void SetContext(MarketPanelContext context) {
+        CurrentContext = context;
+        keyBindingPanel.Render(CurrentContext);
     }
 
     public void CheckInput() {
@@ -55,25 +58,20 @@ public class MarketPanel : MonoBehaviour {
         }
     }
 
-    private void SetContext(MarketPanelContext context) {
-        CurrentContext = context;
-        KeyBindingPanel.Render(CurrentContext);
-    }
-
-    private void InterceptNavigationKeys() {
+    private void InterceptNavigationKeys() { 
         if (Input.GetKeyUp(KeyCode.DownArrow)) {
-            Table.SelectNextRow();
+            stockTable.SelectNextRow();
         }
         else if (Input.GetKeyUp(KeyCode.UpArrow)) {
-            Table.SelectPreviousRow();
+            stockTable.SelectPreviousRow();
         }
         else if (Input.GetKeyUp(KeyCode.Escape)) {
-            Table.DeselectRows();
+            stockTable.DeselectRows();
         }
     }
 
     private void InterceptActionKeys() {
-        KeyBindingPanel.KeyBindings.ForEach(binding => {
+        keyBindingPanel.KeyBindings.ForEach(binding => {
             if (Input.GetKeyUp(binding.Key)) {
                 PerformAction(binding.Action);
             }
@@ -86,31 +84,46 @@ public class MarketPanel : MonoBehaviour {
                 DisplayHelpMessages();
                 break;
             case KeyBindingAction.Buy:
-                if (market.ActiveStock == null || market.CurrentState != MarketState.DayStarted) return;
-                DisplayBuyModal();
+                HandleBuyAction();
                 break;
             case KeyBindingAction.Sell:
-                if  (market.ActiveStock == null 
-                 || !player.OwnedStocks.ContainsKey(market.ActiveStock.Symbol)
-                 ||  player.OwnedStocks[market.ActiveStock.Symbol] <= 0
-                 ||  market.CurrentState != MarketState.DayStarted) {
-                    return;
-                }
-                DisplaySellModal();
+                HandleSellAction();
                 break;
             case KeyBindingAction.Short:
-                if (market.ActiveStock == null
-                 || market.CurrentState != MarketState.DayStarted
-                 || player.Owns(market.ActiveStock)) {
-                    return;
-                }
-                DisplayShortModal();
+                HandleShortAction();
                 break;
         }
     }
 
+    private void HandleBuyAction() {
+        if (IsStockSelectedAndMarketActive()) {
+            DisplayBuyModal();
+        }
+    }
+
+    private void HandleSellAction() {
+        if (IsStockSelectedAndMarketActive() && CanPlayerSellActiveStock()) {
+            DisplaySellModal();
+        }
+    }
+
+    private void HandleShortAction() {
+        if (IsStockSelectedAndMarketActive() && !player.Owns(market.ActiveStock)) {
+            DisplayShortModal();
+        }
+    }
+
+    private bool IsStockSelectedAndMarketActive() {
+        return market.ActiveStock != null && market.CurrentState == MarketState.DayStarted;
+    }
+
+    private bool CanPlayerSellActiveStock() {
+        var activeStock = market.ActiveStock;
+        return player.Owns(activeStock) && !player.Shorted(activeStock);
+    }
+
     private void DisplayAlertModal(string title, string message, Action onSubmit, Action onExit) {
-        var modal = Instantiate(AlertModalPrefab, transform.root, false);
+        var modal = Instantiate(alertModalPrefab, transform.root, false);
         modal.SetTitle(title);
         modal.SetMessage(message);
         isModalOpened = true;
@@ -119,7 +132,7 @@ public class MarketPanel : MonoBehaviour {
     }
 
     private void DisplayQuantityModal(string title, Action<int> onSubmit) {
-        var modal = Instantiate(QuantityModalPrefab, transform.root, false);
+        var modal = Instantiate(quantityModalPrefab, transform.root, false);
         modal.SetTitle(title);
         isModalOpened = true;
         modal.OnSubmit += onSubmit;
@@ -129,7 +142,7 @@ public class MarketPanel : MonoBehaviour {
     private void DisplayBuyModal() {
         var stock = market.ActiveStock;
         var title = String.Format("BUY {0}", stock.Symbol);
-        if (player.Borrowed(stock)) {
+        if (player.Shorted(stock)) {
             DisplayAlertModal(title, "Buy all shorted stocks?", HandleBuyAllModalSubmit, HandleModalExit);
         }
         else {
@@ -182,7 +195,7 @@ public class MarketPanel : MonoBehaviour {
     private void HandleSellModalSubmit() {
         HandleModalExit();
         if (GameData.GetSFXOn()) {
-            AudioSource.PlayClipAtPoint(SellSoundEffect, Vector3.one);
+            AudioSource.PlayClipAtPoint(sellSoundEffect, Vector3.one);
         }
         player.SellAll(market.ActiveStock);
     }
@@ -208,16 +221,16 @@ public class MarketPanel : MonoBehaviour {
 
     private void HandleMarketDayStarted() {
         if (CurrentContext == MarketPanelContext.RowSelected) {
-            HandleTableRowSelected(Table.GetCurrentRow());
+            HandleTableRowSelected(stockTable.GetCurrentRow());
         }
     }
 
     private void HandleMarketDayEnded() {
-        KeyBindingPanel.Render(CurrentContext);
+        keyBindingPanel.Render(CurrentContext);
     }
 
     private void HandleStockAdded(Stock stock) {
-        Table.InsertRow(stock, player);
+        stockTable.InsertRow(stock, player);
     }
 
     private void HandleTableRowSelected(StockTableRow row) {

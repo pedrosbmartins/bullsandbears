@@ -4,20 +4,20 @@ using UnityEngine;
 
 public class StockChart : MonoBehaviour {
 
-    private const int PRICE_POINTS_COUNT = 100;
-    private const int CEILING_MARGIN = 20;
+    private const int PricePointsCount = 100;
+    private const int CeilingMargin = 20;
 
-    public CeilingLineRenderer CeilingLine;
-    public PriceGraphRenderer PriceGraph;
+    [SerializeField] private CeilingLineRenderer ceilingLine;
+    [SerializeField] private PriceGraphRenderer priceGraph;
 
     public void Draw(Stock stock) {
-        CeilingLine.Draw(stock, CEILING_MARGIN);
-        PriceGraph.Draw(stock, CEILING_MARGIN, PRICE_POINTS_COUNT);
+        ceilingLine.Draw(stock, CeilingMargin);
+        priceGraph.Draw(stock, CeilingMargin, PricePointsCount);
     }
 
     public void Clear() {
-        CeilingLine.Clear();
-        PriceGraph.Clear();
+        ceilingLine.Clear();
+        priceGraph.Clear();
     }
 
 }

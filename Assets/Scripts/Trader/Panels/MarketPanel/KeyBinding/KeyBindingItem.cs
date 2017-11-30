@@ -5,12 +5,12 @@ using UnityEngine.UI;
 
 public class KeyBindingItem : MonoBehaviour {
 
-    public Text KeyField;
-    public Text ActionField;
+    [SerializeField] private Text keyField;
+    [SerializeField] private Text actionField;
 
     public void SetBinding(KeyBinding keyBinding) {
-        KeyField.text = keyBinding.Key.ToString();
-        ActionField.text = keyBinding.Action.ToString();
+        keyField.text = keyBinding.Key.ToString();
+        actionField.text = keyBinding.Action.ToString();
     }
 
 }

@@ -9,24 +9,24 @@ public abstract class Modal : MonoBehaviour {
     public event Action OnExit = delegate { };
     public event Action OnSubmit = delegate { };
 
-    public Text Title;
-    public Text Message;
-    public Button OkButton;
+    [SerializeField] private Text titleField;
+    [SerializeField] private Text messageField;
+    [SerializeField] private Button okButton;
 
     protected Color defaultButtonColor = Color.white;
     protected Color pressedButtonColor = Color.gray;
 
     public void SetTitle(string title) {
-        Title.text = title;
+        titleField.text = title;
     }
 
     public void SetMessage(string message) {
-        Message.text = message;
+        messageField.text = message;
     }
 
     protected virtual void Update() {
         if (Input.GetKeyDown(KeyCode.Return)) {
-            OkButton.image.color = pressedButtonColor;
+            okButton.image.color = pressedButtonColor;
         }
         else if (Input.GetKeyUp(KeyCode.Return)) {
             StartCoroutine(OkButtonClick());
@@ -42,7 +42,7 @@ public abstract class Modal : MonoBehaviour {
     }
 
     protected IEnumerator OkButtonClick() {
-        OkButton.image.color = defaultButtonColor;
+        okButton.image.color = defaultButtonColor;
         yield return new WaitForSeconds(0.1f);
         Destroy(gameObject);
         OnOkButtonClicked();

@@ -6,35 +6,35 @@ using UnityEngine.UI;
 
 public class DayDisplay : MonoBehaviour {
 
-    private const float DISPLAY_SECONDS = 1.6f;
+    private const float DisplaySecondsAmount = 1.6f;
 
-    public AudioSource SFX;
-    public Text Label;
+    [SerializeField] private AudioSource sfx;
+    [SerializeField] private Text textLabel;
 
-    public event Action OnHide = delegate { };
+    public event Action OnFinish = delegate { };
 
     private void Start() {
         if (GameData.GetSFXOn()) {
-            SFX.Play();
+            sfx.Play();
         }
         StartCoroutine(Display());
     }
 
     private void Update() {
         if (Input.GetKeyDown(KeyCode.Return)) {
-            Hide();
+            Finish();
         }
     }
 
     private IEnumerator Display() {
-        Label.text = String.Format("Day {0}", GameData.GetDayCount());
-        yield return new WaitForSeconds(DISPLAY_SECONDS);
-        Hide();
+        textLabel.text = String.Format("Day {0}", GameData.GetDayCount());
+        yield return new WaitForSeconds(DisplaySecondsAmount);
+        Finish();
     }
 
-    private void Hide() {
+    private void Finish() {
         Destroy(gameObject);
-        OnHide();
+        OnFinish();
     }
 
 }

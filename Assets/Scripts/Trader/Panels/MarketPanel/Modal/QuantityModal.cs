@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -8,34 +6,34 @@ public class QuantityModal : Modal {
 
     public new event Action<int> OnSubmit = delegate { };
 
-    public Slider QuantitySlider;
-    public Text QuantityField;
+    [SerializeField] private Slider quantitySlider;
+    [SerializeField] private Text quantityField;
 
-    private const int DEFAULT_QUANTITY = 100;
+    private const int DefaultQuantity = 100;
 
     private void Awake() {
-        QuantitySlider.onValueChanged.AddListener(OnQuantityChange);
-        QuantityField.text = DEFAULT_QUANTITY.ToString();
+        quantitySlider.onValueChanged.AddListener(OnQuantityChange);
+        quantityField.text = DefaultQuantity.ToString();
     }
 
     protected override void Update() {
         base.Update();
 
         if (Input.GetKeyUp(KeyCode.RightArrow)) {
-            QuantitySlider.value += 1;
+            quantitySlider.value += 1;
         }
         else if (Input.GetKeyUp(KeyCode.LeftArrow)) {
-            QuantitySlider.value -= 1;
+            quantitySlider.value -= 1;
         }
     }
 
     protected override void OnOkButtonClicked() {
-        OnSubmit(int.Parse(QuantityField.text));
+        OnSubmit(int.Parse(quantityField.text));
     }
 
     private void OnQuantityChange(float value) {
-        int quantity = DEFAULT_QUANTITY + (DEFAULT_QUANTITY * (int)value);
-        QuantityField.text = quantity.ToString();
+        int quantity = DefaultQuantity + (DefaultQuantity * (int)value);
+        quantityField.text = quantity.ToString();
     }
 
 }

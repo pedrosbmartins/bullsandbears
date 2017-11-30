@@ -694,14 +694,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ea4d08c898a7115419bc63cd87c8c558, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  SymbolTextField: {fileID: 114748091405763206}
-  StocksOwnedTextField: {fileID: 114777619113923318}
-  VolumeTextField: {fileID: 114342453177998288}
-  PriceTextField: {fileID: 114101968552724660}
-  PriceHighlightTextField: {fileID: 114379588682611618}
-  ChangeTextField: {fileID: 114338866256896102}
-  TrendTextField: {fileID: 114419710657503824}
-  PriceHighlightCell: {fileID: 114229802927450446}
+  symbolTextField: {fileID: 114748091405763206}
+  stocksOwnedTextField: {fileID: 114777619113923318}
+  volumeTextField: {fileID: 114342453177998288}
+  priceTextField: {fileID: 114101968552724660}
+  priceHighlightTextField: {fileID: 114379588682611618}
+  changeTextField: {fileID: 114338866256896102}
+  trendTextField: {fileID: 114419710657503824}
+  priceHighlightCell: {fileID: 114229802927450446}
 --- !u!114 &114829450045062504
 MonoBehaviour:
   m_ObjectHideFlags: 1

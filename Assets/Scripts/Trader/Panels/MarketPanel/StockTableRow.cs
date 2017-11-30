@@ -5,17 +5,16 @@ using UnityEngine.UI;
 
 public class StockTableRow : MonoBehaviour {
 
+    [SerializeField] private Text symbolTextField;
+    [SerializeField] private Text stocksOwnedTextField;
+    [SerializeField] private Text volumeTextField;
+    [SerializeField] private Text priceTextField;
+    [SerializeField] private Text priceHighlightTextField;
+    [SerializeField] private Text changeTextField;
+    [SerializeField] private Text trendTextField;
+    [SerializeField] private Image priceHighlightCell;
+
     public string AssignedStockSymbol { get; private set; }
-
-    public Text SymbolTextField;
-    public Text StocksOwnedTextField;
-    public Text VolumeTextField;
-    public Text PriceTextField;
-    public Text PriceHighlightTextField;
-    public Text ChangeTextField;
-    public Text TrendTextField;
-
-    public Image PriceHighlightCell;
 
     private Color defaultCellColor = new Color(0f, 0f, 0f, 0f);
     private Color highlightCellColor = Color.white;
@@ -23,31 +22,31 @@ public class StockTableRow : MonoBehaviour {
     private Color defaultTextColor = Color.white;
     private Color highlightTextColor = Color.black;
 
-    private Image TextField;
+    private Image textField;
 
     private Player player;
 
     private void Awake() {
-        TextField = GetComponent<Image>();
+        textField = GetComponent<Image>();
+        player = GetComponentInParent<Player>();
     }
 
-    public void Setup(Stock stock, Player player) {
+    public void Setup(Stock stock) {
         AssignedStockSymbol = stock.Symbol;
-        this.player = player;
         FillInfo(stock);
-        stock.OnProcessed += UpdateData;
-        this.player.OnBuyStock += OwnedStocksCountChanged;
-        this.player.OnSellStock += OwnedStocksCountChanged;
-        this.player.OnBorrowStock += OwnedStocksCountChanged;
+        stock.OnProcess += UpdateData;
+        player.OnBuyStock += OwnedStocksCountChanged;
+        player.OnSellStock += OwnedStocksCountChanged;
+        player.OnShortStock += OwnedStocksCountChanged;
     }
 
     public void Select() {
-        TextField.color = highlightCellColor;
+        textField.color = highlightCellColor;
         SetTextColor(highlightTextColor);
     }
 
     public void Deselect() {
-        TextField.color = defaultCellColor;
+        textField.color = defaultCellColor;
         SetTextColor(defaultTextColor);
     }
 
@@ -57,17 +56,17 @@ public class StockTableRow : MonoBehaviour {
     }
 
     private void FillInfo(Stock stock) {
-        SymbolTextField.text = stock.Symbol;
-        StocksOwnedTextField.text = CalculateOwnedCount().ToString();
-        VolumeTextField.text = stock.CurrentVolume().ToString("N2");
-        PriceTextField.text = stock.CurrentPrice().ToString("N2");
-        ChangeTextField.text = stock.CurrentPriceChange().ToString("N2");
-        TrendTextField.text = stock.CurrentTrend().ToString("N3");
+        symbolTextField.text = stock.Symbol;
+        stocksOwnedTextField.text = CalculateOwnedCount().ToString();
+        volumeTextField.text = stock.CurrentVolume().ToString("N2");
+        priceTextField.text = stock.CurrentPrice().ToString("N2");
+        changeTextField.text = stock.CurrentPriceChange().ToString("N2");
+        trendTextField.text = stock.CurrentTrend().ToString("N3");
     }
 
     private int CalculateOwnedCount() {
-        if (player.OwnedStocks.ContainsKey(AssignedStockSymbol)) {
-            return player.OwnedStocks[AssignedStockSymbol];
+        if (player.Portfolio.ContainsKey(AssignedStockSymbol)) {
+            return player.Portfolio[AssignedStockSymbol];
         }
         else {
             return 0;
@@ -76,24 +75,24 @@ public class StockTableRow : MonoBehaviour {
 
     private void OwnedStocksCountChanged(Stock stock) {
         if (stock.Symbol == AssignedStockSymbol) {
-            StocksOwnedTextField.text = CalculateOwnedCount().ToString();
+            stocksOwnedTextField.text = CalculateOwnedCount().ToString();
         }
     }
 
     private IEnumerator HighlightPriceCell() {
-        PriceHighlightTextField.text = PriceTextField.text;
-        PriceHighlightCell.gameObject.SetActive(true);
+        priceHighlightTextField.text = priceTextField.text;
+        priceHighlightCell.gameObject.SetActive(true);
         yield return new WaitForSeconds(1f);
-        PriceHighlightCell.gameObject.SetActive(false);
+        priceHighlightCell.gameObject.SetActive(false);
     }
 
     private void SetTextColor(Color color) {
-        SymbolTextField.color = color;
-        StocksOwnedTextField.color = color;
-        VolumeTextField.color = color;
-        PriceTextField.color = color;
-        ChangeTextField.color = color;
-        TrendTextField.color = color;
+        symbolTextField.color = color;
+        stocksOwnedTextField.color = color;
+        volumeTextField.color = color;
+        priceTextField.color = color;
+        changeTextField.color = color;
+        trendTextField.color = color;
     }
 
 }

@@ -495,6 +495,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2a4bf9ba4eb75a84b96b9b331fa13800, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  forceMechanics: 0
 --- !u!114 &114505809419782900
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -528,7 +529,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5d20f6f9cfa6b3c4f9533f8d42bd0835, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  forceMechanic: 0
   firstNewsDelay: 10
   newsGapMin: 30
   newsGapMax: 35
@@ -543,9 +543,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 792ad3716f38a4145b6cc467467eeb38, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  TimeField: {fileID: 114404292029445510}
-  MarketDayDurationInSeconds: 90
-  InfiniteDay: 0
+  timeField: {fileID: 114404292029445510}
+  marketDayDurationInSeconds: 90
+  infiniteDay: 0
 --- !u!114 &114596011499478982
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -557,20 +557,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f5c3204f4f3e96045b1c94a41524ade7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  AlertModalPrefab: {fileID: 114179558810335074, guid: 1c36557484cb1b24f9e62d5687d109f7,
+  alertModalPrefab: {fileID: 114179558810335074, guid: 1c36557484cb1b24f9e62d5687d109f7,
     type: 2}
-  DayDisplayPrefab: {fileID: 114834508329678624, guid: 042d71b5b28b3ac4ca3f686b1ddb7a0f,
+  dayDisplayPrefab: {fileID: 114834508329678624, guid: 042d71b5b28b3ac4ca3f686b1ddb7a0f,
     type: 2}
-  MarketPanelPrefab: {fileID: 114564739993225668, guid: fdc7920de98c9074dac8a65a36973211,
+  marketPanelPrefab: {fileID: 114564739993225668, guid: fdc7920de98c9074dac8a65a36973211,
     type: 2}
-  StockPanelPrefab: {fileID: 114741546816131262, guid: 02609eefa75c432448054f424aef70a2,
+  stockPanelPrefab: {fileID: 114741546816131262, guid: 02609eefa75c432448054f424aef70a2,
     type: 2}
-  MessagePanelPrefab: {fileID: 114455927054376096, guid: 80c918559776b364698475209414f1d1,
+  messagePanelPrefab: {fileID: 114455927054376096, guid: 80c918559776b364698475209414f1d1,
     type: 2}
-  AccountPanelPrefab: {fileID: 114043560796437954, guid: ce707fe2483d1664cb8f395d0daf994c,
+  accountPanelPrefab: {fileID: 114043560796437954, guid: ce707fe2483d1664cb8f395d0daf994c,
     type: 2}
-  LeftUIPanelContainer: {fileID: 224967169259473252}
-  RightUIPanelContainer: {fileID: 224854440000857400}
+  leftUIPanelContainer: {fileID: 224967169259473252}
+  rightUIPanelContainer: {fileID: 224854440000857400}
 --- !u!114 &114634707871378144
 MonoBehaviour:
   m_ObjectHideFlags: 1

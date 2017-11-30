@@ -256,9 +256,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d435861b5c18a7146857178e5abcc3e3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Scroll: {fileID: 114018413600205614}
-  ItemContainer: {fileID: 224646399383003166}
-  MessageItemPrefab: {fileID: 114491466828668358, guid: aa3c9efa7de5269468080954ea8fec97,
+  scrollRect: {fileID: 114018413600205614}
+  messafeItemContainer: {fileID: 224646399383003166}
+  messageItemPrefab: {fileID: 114491466828668358, guid: aa3c9efa7de5269468080954ea8fec97,
     type: 2}
 --- !u!114 &114569877948187632
 MonoBehaviour:
@@ -362,7 +362,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 0}
-  m_AnchoredPosition: {x: 0.47544557, y: -0.4103241}
+  m_AnchoredPosition: {x: 0.47544557, y: -0.41033936}
   m_SizeDelta: {x: -0.24910894, y: 1.5}
   m_Pivot: {x: 0.5, y: 0}
 --- !u!224 &224646399383003166

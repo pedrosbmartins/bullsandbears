@@ -6,27 +6,27 @@ using UnityEngine.UI;
 
 public class StockTable : MonoBehaviour {
 
+    [SerializeField] private StockTableRow stockTableRowPrefab;
+
     public event Action<StockTableRow> OnRowSelected = delegate { };
     public event Action OnRowSelectionCleared = delegate { };
-
-    public StockTableRow StockTableRowPrefab;
 
     private List<StockTableRow> rows = new List<StockTableRow>();
     private int? selectedRowIndex = null;
 
     public void InsertRow(Stock stock, Player player) {
-        StockTableRow row = Instantiate(StockTableRowPrefab, transform, false);
+        StockTableRow row = Instantiate(stockTableRowPrefab, transform, false);
         rows.Add(row);
-        row.Setup(stock, player);
+        row.Setup(stock);
     }
 
     public void SelectNextRow() {
-        SetCurrentRowByOffset(1);
+        SetCurrentRowIndexByOffset(1);
         SelectCurrentRow();
     }
 
     public void SelectPreviousRow() {
-        SetCurrentRowByOffset(-1);
+        SetCurrentRowIndexByOffset(-1);
         SelectCurrentRow();
     }
 
@@ -39,24 +39,19 @@ public class StockTable : MonoBehaviour {
     }
 
     public StockTableRow GetCurrentRow() {
-        if (selectedRowIndex != null) {
-            return rows[(int)selectedRowIndex];
-        }
-        else {
-            return null;
-        }
+        return selectedRowIndex != null ? rows[(int)selectedRowIndex] : null;
     }
 
-    private void SetCurrentRow(int? index) {
+    private void SetCurrentRowIndex(int? index) {
         selectedRowIndex = index;
     }
 
-    private void SetCurrentRowByOffset(int offset) {
+    private void SetCurrentRowIndexByOffset(int offset) {
         int currentIndex = selectedRowIndex ?? -1;
         int offsetIndex = currentIndex + offset;
         if (offset > 0) {
-            int lastIndex = rows.Count - 1;
-            selectedRowIndex = (offsetIndex > lastIndex) ? lastIndex : offsetIndex;
+            int maxIndex = rows.Count - 1;
+            selectedRowIndex = (offsetIndex > maxIndex) ? maxIndex : offsetIndex;
         }
         else if (offset < 0) {
             selectedRowIndex = (currentIndex == -1) ? rows.Count - 1
@@ -67,7 +62,7 @@ public class StockTable : MonoBehaviour {
 
     private void SelectCurrentRow() {
         rows.ForEach(row => row.Deselect());
-        CurrentRow().Select();
+        GetCurrentRow().Select();
         HandleRowSelectionChanged();
     }
 
@@ -76,12 +71,8 @@ public class StockTable : MonoBehaviour {
             OnRowSelectionCleared();
         }
         else {
-            OnRowSelected(CurrentRow());
+            OnRowSelected(GetCurrentRow());
         }
-    }
-
-    private StockTableRow CurrentRow() {
-        return (selectedRowIndex == null) ? null : rows[(int)selectedRowIndex];
     }
 
 }

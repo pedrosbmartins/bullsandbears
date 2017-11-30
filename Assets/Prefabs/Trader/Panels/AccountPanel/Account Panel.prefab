@@ -417,11 +417,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b1db5e6c4c2841541b3e3ae358dd7ce7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  AccountField: {fileID: 114123738460951858}
-  BalanceField: {fileID: 114309686632097316}
-  AssetsField: {fileID: 114187086566722036}
-  DayChangeField: {fileID: 114498265839152594}
-  PercentageDayChangeField: {fileID: 114040243294311558}
+  accountField: {fileID: 114123738460951858}
+  balanceField: {fileID: 114309686632097316}
+  assetsField: {fileID: 114187086566722036}
+  dayChangeField: {fileID: 114498265839152594}
+  percentageDayChangeField: {fileID: 114040243294311558}
 --- !u!114 &114049867518544660
 MonoBehaviour:
   m_ObjectHideFlags: 1

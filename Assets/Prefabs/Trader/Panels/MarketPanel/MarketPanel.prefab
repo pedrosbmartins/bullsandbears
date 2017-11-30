@@ -611,7 +611,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fc41659cd998075498a01046d4602b4c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  KeyBindingItemPrefab: {fileID: 114867724256455674, guid: 15034481ba1215f4898b149d2ab9635e,
+  keyBindingItemPrefab: {fileID: 114867724256455674, guid: 15034481ba1215f4898b149d2ab9635e,
     type: 2}
 --- !u!114 &114560728049636026
 MonoBehaviour:
@@ -657,14 +657,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e331fc7d8fa813c4c8fb47d8178664c2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Table: {fileID: 114909979554819984}
-  KeyBindingPanel: {fileID: 114496542745036206}
-  AutoCheckInput: 0
-  QuantityModalPrefab: {fileID: 114430853264308332, guid: 941ce16ec8bf11c47aebcb6105a9deab,
+  autoCheckInput: 0
+  stockTable: {fileID: 114909979554819984}
+  keyBindingPanel: {fileID: 114496542745036206}
+  quantityModalPrefab: {fileID: 114430853264308332, guid: 941ce16ec8bf11c47aebcb6105a9deab,
     type: 2}
-  AlertModalPrefab: {fileID: 114179558810335074, guid: 1c36557484cb1b24f9e62d5687d109f7,
+  alertModalPrefab: {fileID: 114179558810335074, guid: 1c36557484cb1b24f9e62d5687d109f7,
     type: 2}
-  SellSoundEffect: {fileID: 8300000, guid: a90209ecfd369b54b80ce6fd0e5af5e0, type: 3}
+  sellSoundEffect: {fileID: 8300000, guid: a90209ecfd369b54b80ce6fd0e5af5e0, type: 3}
   CurrentContext: 0
 --- !u!114 &114630451748575072
 MonoBehaviour:
@@ -832,7 +832,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9262db7886c33f24eb0cba8b56b3a0be, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  StockTableRowPrefab: {fileID: 114803033473807174, guid: 2e619de81db16f14d9d323edd656ab60,
+  stockTableRowPrefab: {fileID: 114803033473807174, guid: 2e619de81db16f14d9d323edd656ab60,
     type: 2}
 --- !u!114 &114922021768809080
 MonoBehaviour:

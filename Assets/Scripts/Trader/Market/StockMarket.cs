@@ -63,65 +63,6 @@ public class StockMarket : MonoBehaviour, IRandomGenerator {
         }
     }
 
-    public void Initialize() {
-        SetState(MarketState.Idle);
-        InitializeRandomStocks();
-        if (OpenMarketOnStart) {
-            BeginDay();
-        }
-    }
-
-    public float NextRandomFloat(float min = 0f, float max = 1f) {
-        return (float)randomGenerator.NextDouble() * (max - min) + min;
-    }
-
-    public Stock AddStock(string symbol, string companyName, Industry industry) {
-        Stock stock = new Stock(symbol, companyName, industry, this);
-        StockList.Add(stock);
-        stock.OnProcessed += HandleStockProcessed;
-        OnStockAdded(stock);
-        return stock;
-    }
-
-    public Stock GetStock(string symbol) {
-        return StockList.Find(stock => stock.Symbol == symbol);
-    }
-
-    public void SetActiveStock(string symbol) {
-        ActiveStock = StockList.Find(stock => stock.Symbol == symbol);
-        if (ActiveStock != null) {
-            OnActiveStockProcessed(ActiveStock);
-        }
-    }
-
-    public void ClearActiveStock() {
-        ActiveStock = null;
-        OnActiveStockCleared();
-    }
-
-    public DateTime GetCurrentTime() {
-        return TimeTracker.GetCurrentTime();
-    }
-
-    public void SetPriceEffect(PriceEffect effect) {
-        StopCoroutine("PriceEffectTimeout");
-        StockList.ForEach(stock => {
-            if (stock.CompanyIndustry == effect.AffectedIndustry) {
-                stock.SetExternalEffect(effect);
-            }
-        });
-        StartCoroutine("PriceEffectTimeout");
-    }
-
-    private IEnumerator PriceEffectTimeout() {
-        yield return new WaitForSeconds(PriceEffectDuration);
-        StockList.ForEach(stock => stock.ClearExternalEffect());
-    }
-
-    private void SetState(MarketState state) {
-        CurrentState = state;
-    }
-
     private void InitializeRandomGenerator() {
         randomGenerator = (RandomSeed == 0) ? new System.Random() : new System.Random(RandomSeed);
     }
@@ -137,6 +78,18 @@ public class StockMarket : MonoBehaviour, IRandomGenerator {
         player.OnAllPositionsClosed += HandleAllPositionsClosed;
     }
 
+    public void Initialize() {
+        SetState(MarketState.Idle);
+        InitializeRandomStocks();
+        if (OpenMarketOnStart) {
+            BeginDay();
+        }
+    }
+
+    private void SetState(MarketState state) {
+        CurrentState = state;
+    }
+
     private void InitializeRandomStocks() {
         for (int i = 0; i < StockCount; i++) {
             AddRandomStock();
@@ -149,6 +102,34 @@ public class StockMarket : MonoBehaviour, IRandomGenerator {
     private void AddRandomStock() {
         var company = companyList[StockList.Count];
         AddStock(company.TickerSymbol, company.Name, company.Industry);
+    }
+
+    public void SetActiveStock(string symbol) {
+        ActiveStock = StockList.Find(stock => stock.Symbol == symbol);
+        if (ActiveStock != null) {
+            OnActiveStockProcessed(ActiveStock);
+        }
+    }
+
+    public void ClearActiveStock() {
+        ActiveStock = null;
+        OnActiveStockCleared();
+    }
+
+    public Stock AddStock(string symbol, string companyName, Industry industry) {
+        Stock stock = new Stock(symbol, companyName, industry, this);
+        StockList.Add(stock);
+        stock.OnProcess += HandleStockProcessed;
+        OnStockAdded(stock);
+        return stock;
+    }
+
+    public Stock GetStock(string symbol) {
+        return StockList.Find(stock => stock.Symbol == symbol);
+    }
+
+    public DateTime GetCurrentTime() {
+        return TimeTracker.GetCurrentTime();
     }
 
     public void BeginDay() {
@@ -166,6 +147,15 @@ public class StockMarket : MonoBehaviour, IRandomGenerator {
         StopAllCoroutines(); // stops all "ProcessStock" and Price Effect coroutines
         DisplayMarketDayEndedMessages();
         OnDayEnded();
+    }
+
+    private IEnumerator ProcessStock(Stock stock) {
+        while (true) {
+            yield return new WaitForSeconds(
+                NextRandomFloat(MinStockProcessingDuration, MaxStockProcessingDuration)
+            );
+            stock.Process();
+        }
     }
 
     private void DisplayMarketDayStartedMessages() {
@@ -189,13 +179,38 @@ public class StockMarket : MonoBehaviour, IRandomGenerator {
         MessageCentral.Instance.DisplayMessages("Message", messages, true);
     }
 
-    private IEnumerator ProcessStock(Stock stock) {
-        while (true) {
-            yield return new WaitForSeconds(
-                NextRandomFloat(MinStockProcessingDuration, MaxStockProcessingDuration)
-            );
-            stock.Process();
+    private void HandleStockProcessed(Stock stock) {
+        OnStockProcessed(stock);
+        if (ActiveStock != null && ActiveStock.Symbol == stock.Symbol) {
+            OnActiveStockProcessed(ActiveStock);
         }
+    }
+
+    private void HandleMarketDayEnded() {
+        EndDay();
+    }
+
+    private void HandleAllPositionsClosed() {
+        SetState(MarketState.Closed);
+    }
+
+    public void SetPriceEffect(PriceEffect effect) {
+        StopCoroutine("PriceEffectTimeout");
+        StockList.ForEach(stock => {
+            if (stock.CompanyIndustry == effect.AffectedIndustry) {
+                stock.SetExternalEffect(effect);
+            }
+        });
+        StartCoroutine("PriceEffectTimeout");
+    }
+
+    private IEnumerator PriceEffectTimeout() {
+        yield return new WaitForSeconds(PriceEffectDuration);
+        StockList.ForEach(stock => stock.ClearExternalEffect());
+    }
+
+    public float NextRandomFloat(float min = 0f, float max = 1f) {
+        return (float)randomGenerator.NextDouble() * (max - min) + min;
     }
 
     private List<Company> GenerateCompanylist() {
@@ -218,21 +233,6 @@ public class StockMarket : MonoBehaviour, IRandomGenerator {
             new Company("F",    "Afford Motor Company",      Industry.Automotive),
             new Company("FOW",  "Folkscar Group",            Industry.Automotive),
         };
-    }
-
-    private void HandleStockProcessed(Stock stock) {
-        OnStockProcessed(stock);
-        if (ActiveStock != null && ActiveStock.Symbol == stock.Symbol) {
-            OnActiveStockProcessed(ActiveStock);
-        }
-    }
-
-    private void HandleMarketDayEnded() {
-        EndDay();
-    }
-
-    private void HandleAllPositionsClosed() {
-        SetState(MarketState.Closed);
     }
 
 }

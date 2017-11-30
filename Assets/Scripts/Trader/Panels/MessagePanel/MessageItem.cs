@@ -6,16 +6,16 @@ using System;
 
 public class MessageItem : MonoBehaviour {
 
-    public Text MetaField;
-    public Text MessageField;
+    [SerializeField] private Text metaField;
+    [SerializeField] private Text messageField;
 
     public void Setup(string type, string message) {
-        MetaField.text = FormatMetaData(type);
-        MessageField.text = message;
+        metaField.text = FormatMetaData(type);
+        messageField.text = message;
     }
 
     public void UpdateMessage(string message) {
-        MessageField.text = message;
+        messageField.text = message;
     }
 
     private string FormatMetaData(string type) {

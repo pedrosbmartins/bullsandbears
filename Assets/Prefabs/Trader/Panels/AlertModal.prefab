@@ -425,9 +425,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 18acd12b05a63cd4ca0e4a187ab97866, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Title: {fileID: 114933985918384638}
-  Message: {fileID: 114718575730705192}
-  OkButton: {fileID: 114837812458606902}
+  titleField: {fileID: 114933985918384638}
+  messageField: {fileID: 114718575730705192}
+  okButton: {fileID: 114837812458606902}
 --- !u!114 &114194172920571726
 MonoBehaviour:
   m_ObjectHideFlags: 1

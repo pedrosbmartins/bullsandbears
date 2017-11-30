@@ -1,15 +1,13 @@
 ﻿using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using System;
-using System.Linq;
 
 public class TimeTracker : MonoBehaviour {
 
-    public Text TimeField;
-    public double MarketDayDurationInSeconds = 90;
-    public bool InfiniteDay = false;
+    [SerializeField] private Text timeField;
+    [SerializeField] private double marketDayDurationInSeconds = 90;
+    [SerializeField] private bool infiniteDay = false;
 
     public DateTime MarketOpenTime = DateTime.Today.AddHours(9.5);
     public DateTime MarketCloseTime = DateTime.Today.AddHours(17);
@@ -33,7 +31,7 @@ public class TimeTracker : MonoBehaviour {
     }
 
     private void UpdateTimeField() {
-        TimeField.text = currentTime.ToString("hh:mm tt");
+        timeField.text = currentTime.ToString("hh:mm tt");
     }
 
     private void TriggerTimeTick() {
@@ -45,12 +43,12 @@ public class TimeTracker : MonoBehaviour {
 
     private double CalculateTickDuration() {
         double totalMinutes = MarketCloseTime.Subtract(MarketOpenTime).TotalMinutes;
-        double duration = MarketDayDurationInSeconds / totalMinutes;
+        double duration = marketDayDurationInSeconds / totalMinutes;
         return duration;
     }
 
     private IEnumerator TimeTick(float tickDuration) {
-        while (InfiniteDay || currentTime < MarketCloseTime) {
+        while (infiniteDay || currentTime < MarketCloseTime) {
             yield return new WaitForSeconds(tickDuration);
             SetCurrentTime(currentTime.AddMinutes(1f));
             UpdateTimeField();

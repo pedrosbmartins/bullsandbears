@@ -5,13 +5,13 @@ using UnityEngine.UI;
 
 public class MessagePanel : MonoBehaviour {
 
-    private const float MESSAGE_QUEUE_DELAY = 2f;
-    private const float MESSAGE_QUEUE_FLUSH_DELAY = 0.1f;
-    private const string MESSAGE_SEPARATOR = "#####################";
+    private const float MessageQueueDelay = 2f;
+    private const float MessageQueueFlushDelay = 0.1f;
+    private const string MessageSeparator = "#####################";
 
-    public ScrollRect Scroll;
-    public RectTransform ItemContainer;
-    public MessageItem MessageItemPrefab;
+    [SerializeField] private ScrollRect scrollRect;
+    [SerializeField] private RectTransform messafeItemContainer;
+    [SerializeField] private MessageItem messageItemPrefab;
 
     private bool isDisplayingMessageQueue = false;
     private Queue<string> messageQueue;
@@ -26,14 +26,14 @@ public class MessagePanel : MonoBehaviour {
     }
 
     public void DisplayMessage(string type, string message) {
-        MessageItem item = Instantiate(MessageItemPrefab, ItemContainer, false);
+        MessageItem item = Instantiate(messageItemPrefab, messafeItemContainer, false);
         item.Setup(type, message);
         ScrollPanelToBottom();
     }
 
     private void ScrollPanelToBottom() {
         Canvas.ForceUpdateCanvases();
-        Scroll.verticalNormalizedPosition = 0;
+        scrollRect.verticalNormalizedPosition = 0;
         Canvas.ForceUpdateCanvases();
     }
 
@@ -46,7 +46,7 @@ public class MessagePanel : MonoBehaviour {
             messageQueueType = type;
             messageQueue = new Queue<string>(messages);
             if (addSeparator) {
-                DisplayMessage(messageQueueType, MESSAGE_SEPARATOR);
+                DisplayMessage(messageQueueType, MessageSeparator);
             }
             if (!delayFirst) {
                 DisplayMessage(messageQueueType, messageQueue.Dequeue()); // shows first message without delay, removing from queue
@@ -73,7 +73,7 @@ public class MessagePanel : MonoBehaviour {
 
     private IEnumerator DisplayMessageQueue() {
         while (messageQueue.Count > 0) {
-            yield return new WaitForSeconds(MESSAGE_QUEUE_DELAY);
+            yield return new WaitForSeconds(MessageQueueDelay);
             DisplayMessage(messageQueueType, messageQueue.Dequeue());
         }
         HandleQueueFinished();
@@ -85,7 +85,7 @@ public class MessagePanel : MonoBehaviour {
 
     private IEnumerator FlushMessageQueue(string nextType, string[] nextMessages, bool addSeparator, bool delayFirst) {
         while (messageQueue.Count > 0) {
-            yield return new WaitForSeconds(MESSAGE_QUEUE_FLUSH_DELAY);
+            yield return new WaitForSeconds(MessageQueueFlushDelay);
             DisplayMessage(messageQueueType, messageQueue.Dequeue());
         }
         HandleFlushQueueFinished(nextType, nextMessages, addSeparator, delayFirst);

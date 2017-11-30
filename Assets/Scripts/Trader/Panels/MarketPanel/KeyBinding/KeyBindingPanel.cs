@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class KeyBindingPanel : MonoBehaviour {
 
-    public KeyBindingItem KeyBindingItemPrefab;
+    [SerializeField] private KeyBindingItem keyBindingItemPrefab;
 
     public List<KeyBinding> KeyBindings = new List<KeyBinding>();
 
@@ -12,7 +12,15 @@ public class KeyBindingPanel : MonoBehaviour {
         KeyBindings.Add(HelpKeyBinding());
         KeyBindings.Add(BuyKeyBinding());
         KeyBindings.Add(SellKeyBinding());
+        
         if (GameAchievements.IsMechanicUnlocked(Mechanic.Short)) {
+            KeyBindings.Add(ShortKeyBinding());
+        }
+    }
+
+    private void Update() {
+        if (KeyBindings.Find(binding => binding.Action == KeyBindingAction.Short) == null 
+         && GameAchievements.IsMechanicUnlocked(Mechanic.Short)) {
             KeyBindings.Add(ShortKeyBinding());
         }
     }
@@ -31,7 +39,7 @@ public class KeyBindingPanel : MonoBehaviour {
     private void RenderItemsByContext(MarketPanelContext context) {
         KeyBindings.ForEach(binding => {
             if (binding.Contexts.Contains(context)) {
-                KeyBindingItem item = Instantiate(KeyBindingItemPrefab, transform, false);
+                KeyBindingItem item = Instantiate(keyBindingItemPrefab, transform, false);
                 item.SetBinding(binding);
             }
         });
