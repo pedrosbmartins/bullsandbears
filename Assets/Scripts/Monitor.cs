@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Monitor : MonoBehaviour {
 
-    public CRT CRT;
+    [SerializeField] private CRT CRT;
 
 	private void Start () {
         ChangeTerminalColor(GameData.GetTerminalColor());

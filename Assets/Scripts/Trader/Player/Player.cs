@@ -21,12 +21,12 @@ public class Player : MonoBehaviour {
     public void Awake() {
         market = GetComponent<StockMarket>();
         OwnedStocks = new Dictionary<string, int>();
-        Account = new Account(GameData.GetBalance());
+        Account = new Account(GameData.GetAccountBalance());
         market.OnStockProcessed += HandleStockProcessed;
     }
 
     public void SaveBalance() {
-        GameData.SetBalance(Account.Balance);
+        GameData.SetAccountBalance(Account.Balance);
     }
 
     public bool Owns(Stock stock) {

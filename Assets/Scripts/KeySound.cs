@@ -4,11 +4,11 @@ using UnityEngine;
 
 public class KeySound : MonoBehaviour {
 
-    public AudioClip KeyDownClip;
-    public AudioClip KeyUpClip;
+    [SerializeField] private AudioClip keyDownClip;
+    [SerializeField] private AudioClip keyUpClip;
 
-    public AudioClip AltKeyDownClip;
-    public AudioClip AltKeyUpClip;
+    [SerializeField] private AudioClip alternativeKeyDownClip;
+    [SerializeField] private AudioClip alternativeKeyUpClip;
 
     private void Update () {
         if (GameData.GetSFXOn()) {
@@ -19,18 +19,18 @@ public class KeySound : MonoBehaviour {
     private void CheckKeyPress() {
         pressableKeys.ForEach(key => {
             if (Input.GetKeyDown(key)) {
-                AudioSource.PlayClipAtPoint(KeyDownClip, Vector2.one);
+                AudioSource.PlayClipAtPoint(keyDownClip, Vector2.one);
             }
             if (Input.GetKeyUp(key)) {
-                AudioSource.PlayClipAtPoint(KeyUpClip, Vector2.one);
+                AudioSource.PlayClipAtPoint(keyUpClip, Vector2.one);
             }
         });
-        pressableAltKeys.ForEach(key => {
+        pressableAlternativeKeys.ForEach(key => {
             if (Input.GetKeyDown(key)) {
-                AudioSource.PlayClipAtPoint(AltKeyDownClip, Vector2.one);
+                AudioSource.PlayClipAtPoint(alternativeKeyDownClip, Vector2.one);
             }
             if (Input.GetKeyUp(key)) {
-                AudioSource.PlayClipAtPoint(AltKeyUpClip, Vector2.one);
+                AudioSource.PlayClipAtPoint(alternativeKeyUpClip, Vector2.one);
             }
         });
     }
@@ -47,7 +47,7 @@ public class KeySound : MonoBehaviour {
         KeyCode.Return, KeyCode.Backspace, KeyCode.Escape
     };
 
-    private List<KeyCode> pressableAltKeys = new List<KeyCode>() {
+    private List<KeyCode> pressableAlternativeKeys = new List<KeyCode>() {
         KeyCode.UpArrow,
         KeyCode.DownArrow,
         KeyCode.LeftArrow,

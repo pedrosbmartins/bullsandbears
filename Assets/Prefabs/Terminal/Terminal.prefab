@@ -198,6 +198,7 @@ GameObject:
   - component: {fileID: 222409648762594922}
   - component: {fileID: 114919297031146278}
   - component: {fileID: 114777971072857704}
+  - component: {fileID: 114105998879613900}
   m_Layer: 5
   m_Name: Terminal
   m_TagString: Untagged
@@ -232,6 +233,17 @@ MonoBehaviour:
   m_FillAmount: 1
   m_FillClockwise: 1
   m_FillOrigin: 0
+--- !u!114 &114105998879613900
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1834901295363236}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: be40c1eb3b4fc85479ce84d8f286403c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &114170598250421898
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -303,7 +315,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dd6a5fbac31d48d41877c5263d71a87b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Field: {fileID: 114951297015730690}
+  inputField: {fileID: 114951297015730690}
 --- !u!114 &114502132627361054
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -495,12 +507,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c1ec7819932486b40bb36a27c6cff296, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  skipBootDelays: 0
-  Scroll: {fileID: 114596312155099652}
-  Content: {fileID: 224304012980564138}
-  TextLinePrefab: {fileID: 114169833448854912, guid: 54289ddb16b0e9343a0c0cb2124b4491,
+  scrollRect: {fileID: 114596312155099652}
+  contentRect: {fileID: 224304012980564138}
+  inputLine: {fileID: 114466954914584844}
+  textLinePrefab: {fileID: 114169833448854912, guid: 54289ddb16b0e9343a0c0cb2124b4491,
     type: 2}
-  InputLine: {fileID: 114466954914584844}
+  traderPrefab: {fileID: 114596011499478982, guid: ae8b951b5f9fc864c87d831b8b311527,
+    type: 2}
 --- !u!114 &114919297031146278
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -953,7 +966,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: -16, y: -20}
+  m_SizeDelta: {x: -16, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!224 &224659549143434400
 RectTransform:

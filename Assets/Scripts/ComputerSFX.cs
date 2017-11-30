@@ -4,8 +4,8 @@ using UnityEngine;
 
 public class ComputerSFX : MonoBehaviour {
 
-    public AudioSource HummingSoundSource;
-    public AudioSource BootSoundSource;
+    [SerializeField] private AudioSource hummingSoundSource;
+    [SerializeField] private AudioSource bootSoundSource;
 
     private bool isEnabled;
 
@@ -27,17 +27,17 @@ public class ComputerSFX : MonoBehaviour {
     }
 
     private void PlayBootSFX() {
-        HummingSoundSource.Play();
-        BootSoundSource.Play();
+        hummingSoundSource.Play();
+        bootSoundSource.Play();
     }
 
     private void Play() {
         isEnabled = true;
-        HummingSoundSource.Play();
+        hummingSoundSource.Play();
     }
     private void Stop() {
         isEnabled = false;
-        HummingSoundSource.Stop();
+        hummingSoundSource.Stop();
     }
 
 }

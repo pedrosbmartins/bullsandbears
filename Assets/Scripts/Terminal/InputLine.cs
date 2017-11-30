@@ -6,11 +6,12 @@ using UnityEngine.UI;
 
 public class InputLine : MonoBehaviour {
 
-    public InputField Field;
+    [SerializeField] private InputField inputField;
+
     public event Action<string> OnSubmit = delegate { };
 
-	public void Focus() {
-        Field.ActivateInputField();
+    public void Focus() {
+        inputField.ActivateInputField();
     }
 
     public void Hide() {
@@ -23,13 +24,10 @@ public class InputLine : MonoBehaviour {
 
     public void OnEditEnd() {
         if (Input.GetKeyDown(KeyCode.Return)) {
-            OnSubmit(Field.text);
-            Field.text = "";
-            Focus();
+            OnSubmit(inputField.text);
+            inputField.text = "";
         }
-        else {
-            Focus();
-        }
+        Focus();
     }
 
 }

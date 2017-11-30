@@ -7,58 +7,61 @@ using UnityEngine.UI;
 
 public class Terminal : MonoBehaviour {
 
-    private float bootDelayBase = 0.8f; // not const so you can speedup boot with <enter>
+    [SerializeField] private ScrollRect scrollRect;
+    [SerializeField] private RectTransform contentRect;
+    [SerializeField] private InputLine inputLine;
 
-    public RectTransform Screen;
-    public ScrollRect Scroll;
-    public RectTransform Content;
-    public TextLine TextLinePrefab;
-    public Trader TraderPrefab;
+    [SerializeField] private TextLine textLinePrefab;
+    [SerializeField] private Trader traderPrefab;
 
+    private Monitor monitor;
+    private RectTransform programsInterfaceContainer;
+    private CommandHandler commandHandler;
     private Trader trader;
-    public InputLine InputLine;
-    public Monitor Monitor;
 
-    private List<Command> commandList;
-
+    private float bootDelayBase = 0.8f;
     private bool resetFlag = false;
 
     private void Awake() {
-        InputLine.OnSubmit += HandleSubmittedInput;
-        commandList = GenerateCommandList();
+        monitor = GetComponentInParent<Monitor>();
+        commandHandler = GetComponent<CommandHandler>();
+
+        programsInterfaceContainer = transform.parent.GetComponent<RectTransform>();
+
+        inputLine.OnSubmit += HandleSubmittedInput;
     }
 
     private void Start() {
-        InputLine.Hide();
+        inputLine.Hide();
         StartCoroutine(DisplayBootMessage());
     }
 
     private void Update() {
         if (Input.GetKey(KeyCode.Return)) {
-            bootDelayBase = 0;
+            bootDelayBase = 0; // speeds up boot
         }
     }
 
-    private void DisplayTextLine(string text, bool displayMargin = false) {
-        TextLine textLine = Instantiate(TextLinePrefab, Content, false);
+    public void DisplayTextLine(string text, bool displayMargin = false) {
+        TextLine textLine = Instantiate(textLinePrefab, contentRect, false);
         textLine.Set(text);
         if (displayMargin) DisplayMargin();
-        InputLine.transform.SetAsLastSibling();
+        inputLine.transform.SetAsLastSibling();
         ScrollPanelToBottom();
     }
 
-    private void ScrollPanelToBottom() {
-        Canvas.ForceUpdateCanvases();
-        Scroll.verticalNormalizedPosition = 0;
-        Canvas.ForceUpdateCanvases();
-    }
-
-    private void DisplayMargin() {
+    public void DisplayMargin() {
         DisplayTextLine("");
     }
 
     private void DisplayInputLine(string input) {
         DisplayTextLine(String.Format("> {0}", input));
+    }
+
+    private void ScrollPanelToBottom() {
+        Canvas.ForceUpdateCanvases();
+        scrollRect.verticalNormalizedPosition = 0;
+        Canvas.ForceUpdateCanvases();
     }
 
     private void HandleSubmittedInput(string input) {
@@ -68,68 +71,12 @@ public class Terminal : MonoBehaviour {
         }
         else {
             resetFlag = false;
-            CheckForCommandMatch(input);
+            commandHandler.CheckMatch(input);
         }
     }
 
-    private void CheckForCommandMatch(string input) {
-        foreach (var command in commandList) {
-            var regex = new Regex(command.Matcher, RegexOptions.None);
-            var matches = regex.Matches(input);
-            if (matches.Count > 0) {
-                HandleCommand(command.Action, matches);
-                return;
-            }
-        }
-        // couldn't find a match
-        DisplayTextLine("No command found", true);
-    }
-
-    private void HandleCommand(CommandAction action, MatchCollection matches) {
-        switch (action) {
-            case CommandAction.Color:
-                HandleColorCommand(matches);
-                break;
-            case CommandAction.Help:
-                DisplayAllCommands();
-                break;
-            case CommandAction.Reset:
-                HandleResetCommand();
-                break;
-            case CommandAction.Shutdown:
-                HandleShutdownCommand();
-                break;
-            case CommandAction.Sound:
-                HandleSoundCommand(matches);
-                break;
-            case CommandAction.Trader:
-                HandleTraderCommand();
-                break;
-            default:
-                DisplayTextLine("Error: Invalid command action", true);
-                break;
-        }
-    }
-
-    private void HandleColorCommand(MatchCollection matches) {
-        GroupCollection groups = matches[0].Groups;
-
-        int r, g, b;
-        bool parsed;
-        parsed = int.TryParse(groups[2].Value, out r);
-        parsed = int.TryParse(groups[3].Value, out g) && parsed;
-        parsed = int.TryParse(groups[4].Value, out b) && parsed;
-
-        if (parsed) {
-            ChangeTerminalColor(r, g, b);
-        }
-        else {
-            DisplayTextLine("Error: Could not parse terminal color", true);
-        }
-    }
-
-    private void ChangeTerminalColor(int r, int g, int b) {
-        if (Monitor != null) {
+    public void ChangeColor(int r, int g, int b) {
+        if (monitor != null) {
             var color = new Color(r / 255f, g / 255f, b / 255f);
             if (IsVisibilityLow(color)) {
                 DisplayTextLine(
@@ -139,7 +86,7 @@ public class Terminal : MonoBehaviour {
                 return;
             }
             DisplayTextLine("Terminal color changed", true);
-            Monitor.ChangeTerminalColor(color);
+            monitor.ChangeTerminalColor(color);
             GameData.SetTerminalColor(color);
         }
     }
@@ -151,39 +98,32 @@ public class Terminal : MonoBehaviour {
                color.b <= threshold;
     }
 
-    private void DisplayAllCommands() {
-        commandList.ForEach(command => {
-            string formattedName = command.Name.PadRight(11);
-            DisplayTextLine(String.Format("{0}  {1}", formattedName, command.Description));
-        });
-        DisplayMargin();
-    }
-
-    private void HandleTraderCommand() {
+    public void StartTraderProgram() {
         StartCoroutine(TraderBoot());
     }
 
     private IEnumerator TraderBoot() {
-        InputLine.Hide();
+        inputLine.Hide();
         DisplayTextLine("Starting trader program...");
         yield return new WaitForSeconds(2f);
         RunTraderProgram();
-        InputLine.Show();
+        inputLine.Show();
         DisplayMargin();
     }
 
     private void RunTraderProgram() {
         gameObject.SetActive(false);
-        trader = Instantiate(TraderPrefab, Screen, false);
+        trader = Instantiate(traderPrefab, programsInterfaceContainer, false);
         trader.OnExitProgram += HandleTraderExit;
         trader.OnRebootProgram += HandleTraderReboot;
     }
 
     private void HandleTraderExit() {
         trader.OnExitProgram -= HandleTraderExit;
+        trader = null;
         Destroy(trader.gameObject);
         gameObject.SetActive(true);
-        InputLine.Focus();
+        inputLine.Focus();
         ScrollPanelToBottom();
     }
 
@@ -193,18 +133,18 @@ public class Terminal : MonoBehaviour {
         RunTraderProgram();
     }
 
-    private void HandleShutdownCommand() {
-        StartCoroutine(Shutdown());
+    public void Shutdown() {
+        StartCoroutine(ShutdownCoroutine());
     }
 
-    private IEnumerator Shutdown() {
-        InputLine.Hide();
+    private IEnumerator ShutdownCoroutine() {
+        inputLine.Hide();
         DisplayTextLine("Shutting down the system...");
         yield return new WaitForSeconds(2f);
         Application.Quit();
     }
 
-    private void HandleResetCommand() {
+    public void StartResetMode() {
         DisplayTextLine("Are you sure you want to reset all data?");
         DisplayTextLine("(Type 'yes', or ignore)", true);
         resetFlag = true;
@@ -212,46 +152,10 @@ public class Terminal : MonoBehaviour {
 
     private void ResetGameData() {
         GameData.Reset();
-        if (Monitor != null) {
-            Monitor.ChangeTerminalColor(GameData.GetTerminalColor());
+        if (monitor != null) {
+            monitor.ChangeTerminalColor(GameData.GetTerminalColor());
         }
         DisplayTextLine("Data has been reset", true);
-    }
-
-    private void HandleSoundCommand(MatchCollection matches) {
-        GroupCollection groups = matches[0].Groups;
-        string option = groups[2].Value;
-
-        var music = false;
-        var sfx = false;
-        string message;
-
-        switch (option) {
-            case "on":
-                music = true;
-                sfx = true;
-                message = "Sound has been turned on";
-                break;
-            case "off":
-                message = "Sound has been turned off";
-                break;
-            case "music":
-                music = true;
-                message = "Only music has been turned on";
-                break;
-            case "sfx":
-                message = "Only sound effects have been turned on";
-                sfx = true;
-                break;
-            default:
-                message = "There was an error with the sound command";
-                break;
-        }
-
-        GameData.SetMusicOn(music);
-        GameData.SetSFXOn(sfx);
-
-        DisplayTextLine(message, true);
     }
 
     private IEnumerator DisplayBootMessage() {
@@ -259,8 +163,9 @@ public class Terminal : MonoBehaviour {
         DisplayTextLine("Bulls & Bears Terminal Version 1.0");
         yield return new WaitForSeconds(bootDelayBase / 2);
         DisplayTextLine("(C) Copyleft Bulls & Bears Inc. 1986", true);
-        // yeah, I know this repeating lines look terrible, 
-        // but it is meant to better speedup boot when pressing <enter>
+        // yeah, I know this repeating lines look terrible, but it's meant to 
+        // better speedup boot when pressing <enter> (which sets bootDelayBase to 0)
+        // using 2 * bootDelayBase would basically 'lock' the boot for this amount of time
         yield return new WaitForSeconds(bootDelayBase);
         yield return new WaitForSeconds(bootDelayBase);
         DisplayTextLine("Booting from disk...");
@@ -269,37 +174,8 @@ public class Terminal : MonoBehaviour {
         DisplayTextLine("Ok", true);
         yield return new WaitForSeconds(bootDelayBase / 2);
         DisplayTextLine("(type 'trader' to start, or 'help' for available commands)");
-        InputLine.Show();
-        InputLine.Focus();
-    }
-
-    private List<Command> GenerateCommandList() {
-        return new List<Command>() {
-            new Command("color r,g,b", @"^(color|c) (\d{1,3}),(\d{1,3}),(\d{1,3})$", "Set terminal color (0-255)", CommandAction.Color),
-            new Command("help", @"^(help|h)$", "Display all available commands", CommandAction.Help),
-            new Command("reset", @"^(reset|r)$", "Reset all data", CommandAction.Reset),
-            new Command("shutdown", @"^(shutdown|sd)$", "Shutdown the system", CommandAction.Shutdown),
-            new Command("sound <opt>", @"^(sound|s) (on|off|music|sfx)$", "Set sound (on,off,music,sfx)", CommandAction.Sound),
-            new Command("trader", @"^(trader|t)$", "Run trader program", CommandAction.Trader),       
-        };
+        inputLine.Show();
+        inputLine.Focus();
     }
 
 }
-
-public class Command {
-
-    public readonly string Name;
-    public readonly string Matcher;
-    public readonly string Description;
-    public readonly CommandAction Action;
-
-    public Command(string name, string matcher, string description, CommandAction action) {
-        Name = name;
-        Matcher = matcher;
-        Description = description;
-        Action = action;
-    }
-
-}
-
-public enum CommandAction { Color, Help, Reset, Shutdown, Sound, Trader };

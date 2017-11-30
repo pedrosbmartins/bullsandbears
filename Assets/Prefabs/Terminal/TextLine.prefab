@@ -57,7 +57,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4f27ede9e3d9fc8439c8362c5aacce33, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Field: {fileID: 114389194359706132}
+  textField: {fileID: 114389194359706132}
 --- !u!114 &114389194359706132
 MonoBehaviour:
   m_ObjectHideFlags: 1

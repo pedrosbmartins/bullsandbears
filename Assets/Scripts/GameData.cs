@@ -4,94 +4,102 @@ using UnityEngine;
 
 public class GameData {
 
-    private const string BALANCE_KEY = "PlayerBalance";
-    private const float BALANCE_DEFAULT = 50000f;
+    #region AccountBalance
+    private const string AccountBalanceKey = "PlayerAccountBalance";
+    private const float AccountBalanceDefault = 50000f;
 
-    private const string DAY_COUNT_KEY = "DayCount";
-    private const int DAY_COUNT_DEFAULT = 1;
+    public static float GetAccountBalance() {
+        return PlayerPrefs.GetFloat(AccountBalanceKey, AccountBalanceDefault);
+    }
 
-    private const string ACHIEVEMENT_LEVEL_KEY = "AchievementLevel";
-    private const int ACHIEVEMENT_LEVEL_DEFAULT = 0;
-
-    private const string MUSIC_ON_KEY = "MusicOn";
-    private const bool MUSIC_ON_DEFAULT = true;
-
-    private const string SFX_ON_KEY = "SFXOn";
-    private const bool SFX_ON_DEFAULT = true;
-
-    #region TerminalColor
-    private const string RED_KEY = "TerminalColorRed";
-    private const float RED_DEFAULT = 0.22f;
-
-    private const string GREEN_KEY = "TerminalColorGreen";
-    private const float GREEN_DEFAULT = 0.44f;
-
-    private const string BLUE_KEY = "TerminalColorBlue";
-    private const float BLUE_DEFAULT = 0.20f;
+    public static void SetAccountBalance(float balance) {
+        PlayerPrefs.SetFloat(AccountBalanceKey, balance);
+    }
     #endregion
 
-    public static float GetBalance() {
-        return PlayerPrefs.GetFloat(BALANCE_KEY, BALANCE_DEFAULT);
-    }
-
-    public static void SetBalance(float balance) {
-        PlayerPrefs.SetFloat(BALANCE_KEY, balance);
-    }
+    #region DayCount
+    private const string DayCountKey = "DayCount";
+    private const int DayCountDefault = 1;
 
     public static int GetDayCount() {
-        return PlayerPrefs.GetInt(DAY_COUNT_KEY, DAY_COUNT_DEFAULT);
+        return PlayerPrefs.GetInt(DayCountKey, DayCountDefault);
     }
 
     public static void IncrementDayCount() {
-        PlayerPrefs.SetInt(DAY_COUNT_KEY, GetDayCount() + 1);
+        PlayerPrefs.SetInt(DayCountKey, GetDayCount() + 1);
     }
+    #endregion
+
+    #region AchievementLevel
+    private const string AchievementLevelKey = "AchievementLevel";
+    private const int AchievementLevelDefault = 0;
 
     public static int GetAchievementLevel() {
-        return PlayerPrefs.GetInt(ACHIEVEMENT_LEVEL_KEY, ACHIEVEMENT_LEVEL_DEFAULT);
+        return PlayerPrefs.GetInt(AchievementLevelKey, AchievementLevelDefault);
     }
 
     public static void SetAchievementLevel(int level) {
-        PlayerPrefs.SetInt(ACHIEVEMENT_LEVEL_KEY, level);
+        PlayerPrefs.SetInt(AchievementLevelKey, level);
     }
 
     public static void IncrementAchievementLevel() {
         SetAchievementLevel(GetAchievementLevel() + 1);
     }
+    #endregion
+
+    #region Sound
+    private const string MusicOnKey = "MusicOn";
+    private const bool MusicOnDefault = true;
+
+    private const string SFXOnKey = "SFXOn";
+    private const bool SFXOnDefault = true;
+
+    public static bool GetMusicOn() {
+        return GetBool(MusicOnKey, MusicOnDefault);
+    }
+
+    public static void SetMusicOn(bool musicOn) {
+        SetBool(MusicOnKey, musicOn);
+    }
+
+    public static bool GetSFXOn() {
+        return GetBool(SFXOnKey, SFXOnDefault);
+    }
+
+    public static void SetSFXOn(bool sfxOn) {
+        SetBool(SFXOnKey, sfxOn);
+    }
+    #endregion
+
+    #region TerminalColor
+    private const string ColorRedKey = "TerminalColorRed";
+    private const float ColorRedDefault = 0.22f;
+
+    private const string ColorGreenKey = "TerminalColorGreen";
+    private const float ColorGreenDefault = 0.44f;
+
+    private const string ColorBlueKey = "TerminalColorBlue";
+    private const float ColorBlueDefault = 0.20f;
 
     public static Color GetTerminalColor() {
         return new Color(
-            PlayerPrefs.GetFloat(RED_KEY, RED_DEFAULT),
-            PlayerPrefs.GetFloat(GREEN_KEY, GREEN_DEFAULT),
-            PlayerPrefs.GetFloat(BLUE_KEY, BLUE_DEFAULT)
+            PlayerPrefs.GetFloat(ColorRedKey, ColorRedDefault),
+            PlayerPrefs.GetFloat(ColorGreenKey, ColorGreenDefault),
+            PlayerPrefs.GetFloat(ColorBlueKey, ColorBlueDefault)
         );
     }
 
     public static void SetTerminalColor(Color color) {
-        PlayerPrefs.SetFloat(RED_KEY, color.r);
-        PlayerPrefs.SetFloat(GREEN_KEY, color.g);
-        PlayerPrefs.SetFloat(BLUE_KEY, color.b);
+        PlayerPrefs.SetFloat(ColorRedKey, color.r);
+        PlayerPrefs.SetFloat(ColorGreenKey, color.g);
+        PlayerPrefs.SetFloat(ColorBlueKey, color.b);
     }
-
-    public static bool GetMusicOn() {
-        return GetBool(MUSIC_ON_KEY, MUSIC_ON_DEFAULT);
-    }
-
-    public static void SetMusicOn(bool musicOn) {
-        SetBool(MUSIC_ON_KEY, musicOn);
-    }
-
-    public static bool GetSFXOn() {
-        return GetBool(SFX_ON_KEY, SFX_ON_DEFAULT);
-    }
-
-    public static void SetSFXOn(bool sfxOn) {
-        SetBool(SFX_ON_KEY, sfxOn);
-    }
+    #endregion
 
     public static void Reset() {
         PlayerPrefs.DeleteAll();
     }
-
+    
     static void SetBool(string key, bool value) {
         PlayerPrefs.SetInt(key, value ? 1 : 0);
     }

@@ -5,10 +5,10 @@ using UnityEngine.UI;
 
 public class TextLine : MonoBehaviour {
 
-    public Text Field;
+    [SerializeField] private Text textField;
 
 	public void Set(string text) {
-        Field.text = text;
+        textField.text = text;
     }
 
 }

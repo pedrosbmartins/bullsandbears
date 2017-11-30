@@ -1,5 +1,5 @@
 ﻿//#<!--
-//#    CRT-simple shader
+//#    CRT
 //#    https://forum.unity.com/threads/crt-shader.200726/#post-2003264
 //#
 //#    Copyright (C) 2011 DOLLS. Based on cgwg's CRT shader.
@@ -46,7 +46,7 @@ public class CRT : MonoBehaviour {
         }
     }
     #endregion
-    // Use this for initialization
+    
     void Start() {
         if (!SystemInfo.supportsImageEffects) {
             enabled = false;
@@ -74,21 +74,12 @@ public class CRT : MonoBehaviour {
         else {
             Graphics.Blit(sourceTexture, destTexture);
         }
-
-
-    }
-
-    // Update is called once per frame
-    void Update() {
-
     }
 
     void OnDisable() {
         if (curMaterial) {
             DestroyImmediate(curMaterial);
         }
-
     }
-
 
 }
