@@ -12,6 +12,12 @@ It was developed and mainly tested on Windows, so the Linux and Mac builds might
 
 # Credits
 
+## Font
+
+**IBM BIOS** by VileR
+From [The Ultimate Oldschool PC Font Pack](https://int10h.org/oldschool-pc-fonts/)
+Licensed under [Creative Commons: Attribution-ShareAlike 4.0 International](http://creativecommons.org/licenses/by-sa/4.0/) 
+
 ## Music
 
 **Backbay Lounge** by Kevin MacLeod (incompetech.com)
