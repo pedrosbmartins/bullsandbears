@@ -101,7 +101,10 @@ public class StockMarket : MonoBehaviour, IRandomGenerator {
 
     private void AddRandomStock() {
         var company = companyList[StockList.Count];
-        AddStock(company.TickerSymbol, company.Name, company.Industry);
+        var stock = AddStock(company.TickerSymbol, company.Name, company.Industry);
+        for (int i = 0; i < 15; i++) {
+            stock.Process();
+        }
     }
 
     public void SetActiveStock(string symbol) {

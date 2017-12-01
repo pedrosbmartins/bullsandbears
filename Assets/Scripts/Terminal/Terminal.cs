@@ -120,8 +120,8 @@ public class Terminal : MonoBehaviour {
 
     private void HandleTraderExit() {
         trader.OnExitProgram -= HandleTraderExit;
-        trader = null;
         Destroy(trader.gameObject);
+        trader = null;
         gameObject.SetActive(true);
         inputLine.Focus();
         ScrollPanelToBottom();
