@@ -14,13 +14,13 @@ It was developed and mainly tested on Windows, so the Linux and Mac builds might
 
 ## Font
 
-**IBM BIOS** by VileR
-From [The Ultimate Oldschool PC Font Pack](https://int10h.org/oldschool-pc-fonts/)
+**IBM BIOS** by VileR <br />
+From [The Ultimate Oldschool PC Font Pack](https://int10h.org/oldschool-pc-fonts/) <br />
 Licensed under [Creative Commons: Attribution-ShareAlike 4.0 International](http://creativecommons.org/licenses/by-sa/4.0/) 
 
 ## Music
 
-**Backbay Lounge** by Kevin MacLeod (incompetech.com)
+**Backbay Lounge** by Kevin MacLeod (incompetech.com) <br />
 Licensed under [Creative Commons: By Attribution 3.0](http://creativecommons.org/licenses/by/3.0/)
 
 ## SFX
