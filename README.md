@@ -2,7 +2,11 @@
 
 Retro stock trading game, made for GitHub Game Off 2017.
 
+Hosted on https://pedrosbmartins.itch.io/bullsandbears
+
 Built with Unity® in 30 days.
+
+![Boot image](https://img.itch.zone/aW1hZ2UvMTk5MjgzLzkzNDAwMC5naWY=/794x1000/4NCluM.gif)
 
 # Limitations
 
